@@ -1,0 +1,204 @@
+---
+title: "Regression Models - Coursera Project"
+output: pdf_document
+---
+
+Executive Summary:
+------------------
+
+"Is an automatic or manual transmission better for MPG?"
+-------------------------------------------------------
+
+Ignoring confounders, MANUAL cars offer better mileage than AUTOMATIC (approximately 7 mpg more). However, it soon becomes apparent in the analysis of the data, that WEIGHT acts as a CONFOUNDER as well as a significant INTERACTION.
+
+The advantage in mileage of manual cars is seen to decrease faster (steeper slope) than for automatic cars along the x axis representing the weight of the vehicle. At the mean value for car weight, the mileage of automatic cars is already better than for manual transmission vehicles. So for larger cars, automatic transmission is better.
+
+"Quantify the MPG difference between automatic and manual transmissions."
+-------------------------------------------------------------------------
+
+Excluding weight (or other potential confounders, such as horse power) the mean mileage of AUTOMATIC cars is 17.1 mpg versus 24.4 mpg for MANUAL cars. However, the actual difference will depend on the weight of the vehicle. 
+
+****
+
+Exploratory data analysis:
+--------------------------
+
+We can subset the data to compare mileage of MANUAL vs. AUTOMATIC performing a t-test to compare the means, or regress mileage over transmission ("am") as a factor. The regression of mileage ("mpg") over transmission ("am"), assigned to the variable (not shown due to space constrictions) results in an Intercept of 17.147 mpg (Automatic) and 7.245 additional mpg for Manual ("amManual"). The R.Squared is 0.3597989.
+
+```{r, echo=FALSE, results='hide',message=FALSE}
+data(mtcars)
+str(mtcars$am)
+mtcars$am <- as.factor(mtcars$am)
+levels(mtcars$am) <- c("Auto","Manual")
+str(mtcars$am)
+fit <- lm(mpg ~ am, mtcars)
+```
+
+```{r,echo=FALSE,results='hide'}
+fit
+summary(fit)$r.squared
+```
+
+```{r smallplot,results='hide', echo=FALSE,message=FALSE,results='hide',fig.width=3, fig.height=3}
+PLOT<-boxplot(mpg ~am,data=mtcars,col=c('gold','orange'), main= "Mileage of Automatic v. Manual", xlab = 'Transmission', ylab = 'mpg')
+print(PLOT)
+```
+
+
+```{r,echo=FALSE}
+data(mtcars)
+manual <- mtcars[mtcars$am==0,"mpg"]
+automatic <- mtcars[mtcars$am==1,"mpg"]
+manual_mean <- mean(manual)
+automatic_mean <- mean(automatic)
+cbind(manual_mean,automatic_mean)
+```
+
+
+```{r echo=FALSE, results='hide',message=FALSE}
+str(mtcars$am)
+#num [1:32] 1 1 1 0 0 0 0 0 0 0 ...
+mtcars$am <- as.factor(mtcars$am)
+levels(mtcars$am) <- c("Auto","Manual")
+str(mtcars$am)
+#chr [1:2] "Auto" "Manual"
+fit <- lm(mpg ~ am, mtcars)
+summary(fit)
+```
+
+
+***
+
+Initial Model Selection:
+------------------------
+
+In searching for possible confounders in the mtcars dataset, it would make sense that the weight of the vehicle could influence the mileage for both automatic and manual.
+
+```{r,echo=FALSE, message=FALSE}
+fit2 <- lm(mpg ~ am + wt, mtcars)
+fit2
+summary(fit2)$adj.r.squared
+```
+
+This model explains much better the variability in the data as measured by the R-squared (75%). Since we have included one additional regressor, now we have to pay attention to the Adjusted R-squared (74%) to be able to compare appropriately to the initial model with just transmission, and evidently the adjusted R-squared still explains 3/4 of the variability.
+
+```{r,echo=FALSE,message=FALSE,results='hide',fig.width=5, fig.height=3}
+
+require(lattice)
+
+plot1 <- xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
+
+print(plot1, position = c(0.0, 0, 0.5, 1), more = TRUE)
+
+require(mosaic); require(mosaicData)
+fitw = makeFun(fit2) 
+plot1a<-plotFun(fitw(wt,am="Auto")~wt,col='dark red',lwd=2,add=TRUE)
+
+print(plot1a, position = c(0.0, 0, 0.5, 1), more = TRUE)
+
+plot2 <- xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
+
+print(plot2, position = c(0.5, 0, 1, 1), more = TRUE)
+
+plot2a<-plotFun(fitw(wt,am="Manual")~wt,col='orange',lwd=2,add=TRUE)
+
+print(plot2a, position = c(0.5, 0, 1, 1), more = TRUE)
+```
+
+
+Interpretation of Coefficients:
+-------------------------------
+
+The (Intercept) corresponds to the mileage of completely weightless (virtual) cars, and would be of 37.32155 mpg in vehicles with automatic transmission versus 37.32155 - 0.02362 = 37.29793 mpg for manual transmission cars - minimally less. In other words, we have two intercepts. The slope is the decrease in mileage of 5.35281 mpg for each increase of 1000 pounds in weight.
+
+Strategy to Refine Model with Interactions:
+-------------------------------------------
+
+We may also want to see if there is an interaction between transmission and weight, or in other words, whether there are two different slopes as the weight goes up - one for automatic and one for manual transmission.
+
+To explore the need for an interaction we want to perform an ANCOVA to assess if the covariances are different for Automatic and Manual - i.e. different slopes due to the presence of interaction (not shown). Since the F-value of the interaction corresponds to a p value of 0.001 it is worth abandoning the parsimonious bi-variate model, and include the interaction between weight and transmission:
+
+```{r,echo=FALSE,results='hide'}
+model <- aov(mpg~wt*am, data=mtcars)
+summary(model)
+```
+
+
+```{r,echo=FALSE, message=FALSE}
+fit3 <- lm(mpg ~ am*wt, mtcars)
+fit3
+summary(fit3)$adj.r.squared
+```
+
+And clearly the interaction brings up the Adjusted R-squared to 81% by providing two different slopes: the decrease in mileage per unit of weight is more marked for Manual than for Automatic.
+
+```{r,echo=FALSE,fig.keep='last',fig.width=3, fig.height=3}
+require(lattice)
+xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
+require(mosaic); require(mosaicData)
+fitx = makeFun(fit3) 
+plotFun(fitx(wt,am="Auto")~wt,col='dark red',lwd=2,add=TRUE)
+plotFun(fitx(wt,am="Manual")~wt,col='orange',lwd=2,add=TRUE)
+```
+
+Interpretation of Coefficients:
+-------------------------------
+
+The presence of an interaction, and the interpretation of the coefficients is reinforced and aided by the cross over of the two slopes in the plot above.
+
+The interaction results in two markedly different slopes, and by necessity, two different intersects with a steeper drop in Manual cars. The regression line is:
+
+\( mpg = 31.4 + 14.9 * Manual - [3.7859 - (5.2984 * Manual)]  * Weight\)
+------------------------------------------------------------------------
+
+with Manual being a dummy variable: 0 = "Auto""; 1 = "Manual"
+
+Since there are no weightless cars, we can predict the mpg at mean weight: 19.2 mpg for Automatic and 17.1 mpg for Manual (code not shown).
+
+```{r,echo=FALSE, message=FALSE,results='hide'}
+newdata <- data.frame(wt=c(mean(mtcars$wt)),am =c("Auto","Manual"))
+mpg_avgwt <- predict(fit3,newdata)
+newdata1 <- data.frame(wt=c(0),am =c("Auto","Manual"))
+mpg_nowt <- predict(fit3,newdata1)
+mpg_nowt
+mpg_avgwt
+```
+
+So what appears to be a clear advantage of "Manual" at the Intersect, gets reverted when calculated for a car of mean weight. So what is better Manual or Auto? I guess for light cars Manual is better, whereas for heavier cars, Auto provides better mileage.
+
+Can we find a better model avoiding collinearity? We resort to the correlation matrix on numerical variables with ordinal or continuous values (not shown due to space restrictions), showing that mileage is highly (negatively) correlated with weight(wt) as we have seen, but also with other variables (displacement, horsepower). Displacement is highly correlated to weight (0.88), but horsepower could be included, yielding an Adjusted R-Square of:
+
+```{r,echo=FALSE ,message=FALSE,results='hide'}
+subset<-mtcars[,c("mpg","disp","hp","wt")]
+cor(subset,subset)
+```
+
+
+```{r,echo=FALSE, message=FALSE}
+fit4 <- lm(mpg ~ am*wt + am*hp, mtcars)
+summary(fit4)$adj.r.square
+```
+
+However, the model becomes more complex without a marked improvement in the adjusted R-squared. Further, the intercepts are unchanged, and the relative behavior of the slopes is the same.
+
+Residual plot and diagnostics:
+------------------------------
+
+Both the Residuals v. Fitted plot (and the not shown "Scale-Location" plot) show a roughly horizontal fitted line, suggesting normality. Likewise, the Q-Q plot only deviates slightly from the diagonal at the upper end. Short of performing a Shapiro-Wilk, or other numerical test of normality, the visual inspection is concordant with uncorrelated residuals and lack of Heteroscedasticity.
+
+```{r, echo=FALSE, fig.width=5, fig.height=3}
+par(mfrow=c(1,2))
+plot(fit3, which=1:2)
+```
+
+
+Quantifying the uncertainty in conclusions (inference):
+-------------------------------------------------------
+
+As it is already intuitive from the marked differences in adjusted R-squared values, there is bound to be a statistically significant difference between the model including transmission and weight, and the model that also considers their interaction. This can be formalized with an ANOVA test, returning a p value of 0.001.
+
+ANOVA:
+
+```{r,echo=FALSE}
+anova(fit2,fit3)
+```
