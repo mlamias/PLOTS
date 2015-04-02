@@ -1,19 +1,18 @@
 require(lattice)
-
 plot1 <- xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
-
 print(plot1, position = c(0.0, 0, 0.5, 1), more = TRUE)
-
 require(mosaic); require(mosaicData)
 fitw = makeFun(fit2) 
 plot1a<-plotFun(fitw(wt,am="Auto")~wt,col='dark red',lwd=2,add=TRUE)
-
 print(plot1a, position = c(0.0, 0, 0.5, 1), more = TRUE)
-
 plot2 <- xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
-
 print(plot2, position = c(0.5, 0, 1, 1), more = TRUE)
-
 plot2a<-plotFun(fitw(wt,am="Manual")~wt,col='orange',lwd=2,add=TRUE)
-
 print(plot2a, position = c(0.5, 0, 1, 1), more = TRUE)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+require(lattice)
+xyplot(mpg ~ wt,group=am, key = list(text=list(c("Automatic","Manual")),points=list(pch=c(20,20)),col=c('dark red','orange')),pch=c(20,20),cex=1,col=c('dark red','orange'),xlab = "car weight",ylab = "mpg", data=mtcars)
+require(mosaic); require(mosaicData)
+fitx = makeFun(fit3) 
+plotFun(fitx(wt,am="Auto")~wt,col='dark red',lwd=2,add=TRUE)
+plotFun(fitx(wt,am="Manual")~wt,col='orange',lwd=2,add=TRUE)
