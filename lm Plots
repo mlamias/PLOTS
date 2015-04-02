@@ -1,0 +1,13 @@
+par(mfrow = c(1,5))
+plot(x1, y, pch = 19, cex = 0.2, col = "dark red")
+abline(lm(y ~ x1, dat), x1, lwd=2)
+plot(x2, y, pch = 20, cex = 0.2, col = "dark red")
+abline(lm(y ~ x2, dat), x2, lwd=2)
+plot(x3, y, pch = 20, cex = 0.2, col = "dark red")
+abline(lm(y ~ x3, dat), x3, lwd = 2)
+plot(x4, y, pch = 20, cex = 0.2, col = "dark red")
+abline(lm(x1 ~ x3, dat), x3, lwd = 2)
+plot(x3, x1, pch=20, cex = 0.2, col = "dark red")
+abline(lm(x1 ~ x3, dat), x3, lwd = 2)
+
+From Omitted Variable Bias OVB simulation.
