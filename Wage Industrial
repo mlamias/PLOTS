@@ -36,10 +36,11 @@ plot3 <- plot2 + geom_smooth(method="lm", formula = y ~ x)
 
 arrange_ggplot2(plot1,plot3,nrow=1)
 
-p1 <- qplot(age,wage,data=Wage) + 
+p1 <- qplot(age,wage,data=Wage,colour=wage) + 
+  scale_colour_gradient(low="yellow", high="red") + 
     geom_smooth(method="loess")
 
-p2 <- qplot(year,wage,data=Wage) + 
+p2 <- qplot(year,wage,data=Wage) + geom_point(aes(colour = wage)) +
   geom_smooth(method="lm")
 
 
