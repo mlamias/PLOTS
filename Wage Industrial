@@ -30,11 +30,13 @@ str(Wage$jobclass)
 head(Wage)
 require(ggplot2)
 
-plot1 <- qplot(age, wage, color=jobclass, data=Wage)
-plot2 <- qplot(age, wage, color=education, data=Wage)
-plot3 <- plot2 + geom_smooth(method="lm", formula = y ~ x)
+plot1 <- qplot(age, wage, color=jobclass, data=Wage) + 
+  geom_smooth(method="lm")
 
-arrange_ggplot2(plot1,plot3,nrow=1)
+plot2 <- qplot(age, wage, color=education, data=Wage) + 
+  geom_smooth(method="lm", formula = y ~ x)
+
+arrange_ggplot2(plot1,plot2,nrow=1)
 
 p1 <- qplot(age,wage,data=Wage,colour=wage) + 
   scale_colour_gradient(low="yellow", high="red") + 
@@ -44,7 +46,8 @@ p2 <- qplot(year,wage,data=Wage) + geom_point(aes(colour = wage)) +
   geom_smooth(method="lm")
 
 
-p3 <- qplot(education, age, data=Wage, fill=education,
-geom=c("boxplot"))
+p3 <- qplot(education, wage, data=Wage, fill=education,
+geom=c("boxplot")) + geom_point(aes(colour = wage))
 
 arrange_ggplot2(p1,p2,p3,nrow=1)
+arrange_ggplot2(p1,p2,p3,plot1, ncol=1)
