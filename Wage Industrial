@@ -32,5 +32,5 @@ require(ggplot2)
 
 plot1 <- qplot(age, wage, color=jobclass, data=Wage)
 plot2 <- qplot(age, wage, color=education, data=Wage)
-plot2 + geom_smooth(method="lm", formula = y ~ x)
-arrange_ggplot2(plot1,plot2,nrow=1)
+plot3 <- plot2 + geom_smooth(method="lm", formula = y ~ x)
+arrange_ggplot2(plot1,plot3,nrow=1)
