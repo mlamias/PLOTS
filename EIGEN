@@ -1,0 +1,71 @@
+## Function for arranging ggplots. use png(); arrange(p1, p2, ncol=1); dev.off() to save.
+require(grid)
+vp.layout <- function(x, y) viewport(layout.pos.row=x, layout.pos.col=y)
+arrange_ggplot2 <- function(..., nrow=NULL, ncol=NULL, as.table=FALSE) {
+  dots <- list(...)
+  n <- length(dots)
+  if(is.null(nrow) & is.null(ncol)) { nrow = floor(n/2) ; ncol = ceiling(n/nrow)}
+  if(is.null(nrow)) { nrow = ceiling(n/ncol)}
+  if(is.null(ncol)) { ncol = ceiling(n/nrow)}
+  ## NOTE see n2mfrow in grDevices for possible alternative
+  grid.newpage()
+  pushViewport(viewport(layout=grid.layout(nrow,ncol) ) )
+  ii.p <- 1
+  for(ii.row in seq(1, nrow)){
+    ii.table.row <- ii.row  
+    if(as.table) {ii.table.row <- nrow - ii.table.row + 1}
+    for(ii.col in seq(1, ncol)){
+      ii.table <- ii.p
+      if(ii.p > n) break
+      print(dots[[ii.table]], vp=vp.layout(ii.table.row, ii.col))
+      ii.p <- ii.p + 1
+    }
+  }
+}
+
+# Generating Random Vectors from a bivariate standard
+# normal, and a made-up covariance matrix:
+
+require(ggplot2)
+v1 <- rnorm(1e5)
+v2 <- rnorm(1e5)
+X <- rbind(v1,v2)
+
+p1 <- qplot(v1,v2) + 
+  geom_point(col='firebrick') +
+  geom_point(alpha = 0.01) +
+  xlim(c(-20,20)) + ylim(c(-20,20))
+
+C <- matrix(c(20,8,8,20), nrow=2) 
+eival <- eigen(C)$values
+Lambda <- matrix(c(sqrt(eival[1]),0,0,sqrt(eival[2])), nrow=2)
+Lambda
+Stretch <- Lambda%*%X
+
+p2 <- qplot(Stretch[1,],Stretch[2,]) + 
+  geom_point(col='firebrick') +
+  geom_point(alpha = 0.01) +
+  xlim(c(-20,20)) + ylim(c(-20,20))
+
+eivec <- eigen(C)$vectors
+Rot <- eivec%*%Stretch
+
+p3 <- qplot(Rot[1,],Rot[2,]) + 
+  geom_point(col='firebrick') +
+  geom_point(alpha = 0.01) +
+  xlim(c(-20,20)) + ylim(c(-20,20))
+
+mu <- c(3,-7)
+Rand <- Rot + mu
+
+p4 <- qplot(Rand[1,],Rand[2,]) + 
+  geom_point(col='firebrick') +
+  geom_point(alpha = 0.01) +
+  xlim(c(-20,20)) + ylim(c(-30,20))
+
+arrange_ggplot2(p1,p2,p3,p4, ncol=1)
+
+# And the final Random Vector is:
+V1 <- Rand[1,]
+V2 <- Rand[2,]
+V <- rbind(V1,V2)
