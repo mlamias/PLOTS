@@ -82,6 +82,7 @@ V <- rbind(V1,V2)
 # ALTERNATIVE PLOTTING:
 
 
+
 # Generating Random Vectors from a bivariate standard
 # normal, and a made-up covariance matrix:
 
@@ -104,22 +105,36 @@ Rot <- eivec%*%Stretch
 
 
 
+
 mu <- c(3,-7)
 Rand <- Rot + mu
 
 library(RColorBrewer)
+
 par(mfrow=c(4,1))
+
 smoothScatter(v1,v2,
-      xlim=c(-20,20),ylim=c(-20,20))
+      colramp = 
+  colorRampPalette(c("white","chartreuse","darkgreen")),
+  xlim=c(-20,20),ylim=c(-20,20))
+
 abline(h=0); abline(v=0)
+
 smoothScatter(Stretch[1,],Stretch[2,],
-      xlim=c(-20,20),ylim=c(-20,20))
+      colramp = 
+   colorRampPalette(c("white","chartreuse","darkgreen")))
+
 abline(h=0); abline(v=0)
+
 smoothScatter(Rot[1,],Rot[2,],
-      xlim=c(-20,20),ylim=c(-20,20))
+      colramp = 
+      colorRampPalette(c("white","chartreuse","darkgreen")))
 abline(h=0); abline(v=0)
+
+
 smoothScatter(Rand[1,],Rand[2,],
-      xlim=c(-20,20),ylim=c(-20,20))
+      colramp = 
+    colorRampPalette(c("white","chartreuse","green4")))
 abline(h=0); abline(v=0) 
 
 
