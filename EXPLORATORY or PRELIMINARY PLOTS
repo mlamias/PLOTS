@@ -1,0 +1,51 @@
+### From Statistics - An Introduction using R by R. Crowley
+
+# First plot individual variables to see outliers:
+
+# Continuous variables:
+
+plot(y) # If there is an outlier, say greater than 10, use 
+
+which(y>10) 
+[1] 50
+
+# Check out the specific value:
+
+y[50]
+[1] 0.8274156
+
+# If it is incorrect, correct it:
+
+y[50] <- 0.9
+
+# For factor variables use table - and check for additional factor levels:
+
+table(nitrogen) # we have the data set attached.
+
+# If there is a mispelling:
+
+which(nitrogen=="perhaps")
+
+  # RELATIONSHIPS:
+
+# For continuous data:
+
+plot(x, y,pch=21,bg="red")
+
+# If explanatory variable is categorical:
+
+plot(factor(month), temperature)
+
+  # INTERACTIONS:
+  
+  # Interactions between continuous explanatory variables:
+  
+coplot(y∼x|z,pch=16,panel=panel.smooth)
+
+  # Interaction between categorical variables:
+  
+  tapply(yield,list(nitrogen,phosphorus),mean)
+  
+  barplot(tapply(yield,list(nitrogen,phosphorus),mean),beside=TRUE,xlab="phosphorus")
+  legend(locator(1),legend=c("no","yes"),title="nitrogen",fill=c("black","lightgrey"))
+
