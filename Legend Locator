@@ -1,0 +1,4 @@
+ 
+ # plot(...)
+ 
+ legend(locator(1),legend=c("no","yes"),title="nitrogen",fill=c("black","lightgrey"))
