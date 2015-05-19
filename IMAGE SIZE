@@ -1,0 +1,5 @@
+png("image.png", width = 800, height = 600)
+hist(residuals_slice2,freq = F,
+     col="firebrick", border="white", ylim=c(0,2))
+lines(density(residuals_slice2),lwd=4,col='royalblue3')
+dev.off()
