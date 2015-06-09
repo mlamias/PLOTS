@@ -1,0 +1,32 @@
+attach(mtcars)
+cyl <- as.factor(cyl)
+
+ols <- lm(mpg ~ wt * cyl)
+coef(ols)
+summary(ols)
+
+## Plotting...
+
+require(ggplot2)
+qplot(wt, mpg, data = mtcars, geom = c('point','smooth'), method = 'lm',
+      formula = y ~ x, color = cyl, main = "Miles-per-Gallon v. Weight",
+      xlab = 'Weight', ylab = 'Miles Per Gal.')
+
+# Or...
+
+p <- qplot(wt, mpg, geom = 'point', group=cyl, colour = cyl, main = "Varying Slopes & Intercepts")
+p + geom_smooth(aes(group=cyl, colour = cyl), method="lm", fullrange=TRUE)
+
+
+## Now with lmer:
+
+library(lme4)
+mixed_eff <- lmer(mpg ~ 1 + wt + (1 + wt|cyl))
+summary(mixed_eff)
+
+newdata <- with(mtcars, expand.grid(wt=unique(wt),
+                                    cyl=unique(cyl)))
+
+newdata$pred <- predict(mixed_eff, newdata)
+p <- ggplot(newdata, aes(x = wt, y = pred, colour = cyl, group = cyl))
+p + geom_line() + ggtitle("Varying Slopes & Intercepts")
