@@ -21,7 +21,7 @@ p + geom_smooth(aes(group=cyl, colour = cyl), method="lm", fullrange=TRUE)
 ## Now with lmer:
 
 library(lme4)
-mixed_eff <- lmer(mpg ~ 1 + wt + (1 + wt|cyl))
+mixed_eff <- lmer(mpg ~ wt + (wt|cyl))
 summary(mixed_eff)
 
 newdata <- with(mtcars, expand.grid(wt=unique(wt),
