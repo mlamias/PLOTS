@@ -1,0 +1,638 @@
+# This following code is presented in the upcoming book of D. Bates and
+# the book "Mixed-effects Models in S and S-Plus" frome Pinheiro
+# and Bates.
+
+# Depending on the lme4a version, the following code may not work.
+# The code with the lme function may also not work due to modifications
+# of the package nlme.
+
+library(lme4a)
+
+# ==================================================================================
+# --- Example: ergoStool ---
+# ==================================================================================
+
+# exploring the data set
+data(ergoStool,package="MEMSS")
+ergoStool$Subject <- factor(ergoStool$Subject)
+str(ergoStool)
+summary(ergoStool)
+
+# nested, partially crossed, completely crossed?
+xtabs(~ Type + Subject, ergoStool)
+
+# plotting the data
+print(dotplot(reorder(Subject, effort) ~ effort, ergoStool,
+              groups = Type, type = c("p","a"),
+              xlab = "Effort to arise (Borg scale)",
+              auto.key = list(columns=4,lines=TRUE)))
+plot.design(ergoStool)
+
+# Model Fitting
+fm01 <- lmer(effort~1 + Type + (1|Subject), ergoStool, REML=0)
+print(fm01)
+
+# Model Matrix X
+head(with(env(fm01), X),n=9)
+image(with(env(fm01), X))
+
+# Model Matrix Z
+t(env(fm01)$Zt)
+image(t(env(fm01)$Zt))
+
+# Lambda
+env(fm01)$Lambda
+image(env(fm01)$Lambda)
+
+# Sigma
+summary(fm01)$sigma^2*env(fm01)$Lambda%*%t(env(fm01)$Lambda)
+
+# ==================================================================================
+# --- Example: ScotSec ---
+# ==================================================================================
+
+data(ScotsSec,package="mlmRev")
+str(ScotsSec)
+summary(ScotsSec)
+
+print(dotplot(attain~primary|second, ScotsSec)
+plot.design(attain~primary+second,data=ScotsSec)
+
+head(xtabs(~primary + second, ScotsSec))
+
+Sm1 <- lmer(attain~verbal*sex + (1|primary)+ (1|second),ScotsSec)
+print(Sm1)
+
+# Model Matrix Z and Z^TZ
+image(t(env(Sm1)$Zt),asp=1)
+image(env(Sm1)$Zt%*%t(env(Sm1)$Zt))
+
+# Lambda
+image(env(Sm1)$Lambda)
+
+q()
+
+# ==================================================================================
+# --- Example: Dyestuff I ---
+# ==================================================================================
+
+# --- Data handling with lme4 ---
+library(lme4)
+library(lattice)
+
+# information about the data
+data(Dyestuff)
+str(Dyestuff)
+head(Dyestuff)
+summary(Dyestuff)
+
+# Plot the data 
+plot(Dyestuff)
+xyplot(Yield~Batch,Dyestuff)
+
+print(dotplot(reorder(Batch, Yield) ~ Yield, Dyestuff,
+              ylab = "Batch", jitter.y = TRUE, pch = 21,
+              xlab = "Yield of dyestuff (grams of standard color)",
+              type = c("p", "a")))
+
+# --- Data handling with nlme ---
+library(nlme)
+
+str(Dyestuff)
+
+d.dyestuff <- groupedData(Yield~1|Batch,data=Dyestuff)
+str(d.dyestuff)
+
+unique(getGroups(d.dyestuff))
+plot(d.dyestuff)
+
+# Let us look at a more complicated example
+data(BodyWeight)
+str(BodyWeight)
+
+d1.body <- data.frame(BodyWeight)
+str(d1.body)
+plot(d1.body)
+xyplot(weight ~ Time | Rat,groups=Diet,data=d1.body)
+
+d.bodyweight <- groupedData(weight ~ Time | Rat,outer=~Diet,data=d1.body,labels=list(x="Time",y="Body weight"),units=list(x="(days)",y="(g)"))
+str(d.bodyweight)
+
+plot(d.bodyweight,outer=~Diet,aspect=3)
+
+# ==================================================================================
+# --- Example: Dyestuff II ---
+# ==================================================================================
+
+# Model fit
+(fm1ML <- lmer(Yield~ 1 + (1|Batch),Dyestuff, REML=FALSE))
+
+# profile
+pr1 <- profile(fm1ML)
+
+# Profile Zeta Plot
+xyplot(pr1,aspect=1.3)
+xyplot(pr1,aspect=1.3,absVal=TRUE)
+
+confint(pr1,level=0.95)
+
+# for .sig01 = 37.26035
+# (lmer) [12.201753, 84.06289]
+# (nlme) [17.21615, 80.64135]
+
+# for (Intercept) = 1527.5
+# (lmer) [1486.451500, 1568.54849]
+# (nlme) [1490.980, 1564.020]
+
+# Profile pairs plot
+splom(pr1)
+
+
+
+# ==================================================================================
+# --- Example: Pastes 1 ---
+# ==================================================================================
+
+(fm3 <- lmer(strength~1 + (1|sample) + (1|batch),Pastes, REML=0))
+
+(fm3a <- lmer(strength~1 + (1|sample),Pastes, REML=0))
+
+anova(fm3a,fm3)
+
+# ==================================================================================
+# --- Example: Pastes 2 ---
+# ==================================================================================
+
+# Using the asymptotically correct distribution
+
+diffREML <- deviance(fm3a)-deviance(fm3)
+(pvalue <- (0.5*(1-pchisq(diffREML,0)) + 0.5*(1-pchisq(diffREML,1))))
+
+
+# ==================================================================================
+# --- Example: sleepstudy ---
+# ==================================================================================
+
+# Data structure
+data(sleepstudy)
+str(sleepstudy)
+summary(sleepstudy)
+
+xtabs(~ Subject + Days, sleepstudy)
+
+# Plot the data
+print(xyplot(Reaction ~ Days | Subject, sleepstudy, aspect = "xy",
+             layout = c(6,3), type = c("g", "p", "r"),
+             index.cond = function(x,y) coef(lm(y ~ x))[1],
+             xlab = "Days of sleep deprivation",
+             ylab = "Average reaction time (ms)"))
+
+# first model fit with correlated random effects
+(fm8 <- lmer(Reaction ~ 1 + Days + (1 + Days|Subject), sleepstudy,
+             REML = 0))
+
+# random effects
+head(ranef(fm8)[["Subject"]])
+
+# variance components
+cat(paste(capture.output(print(fm8))[8:11], collapse = "\n"), "\n")
+
+# Design Matrix Z
+image(t(env(fm8)$Zt))
+
+# Structure of the Covariance Matrices
+print(image(tcrossprod(env(fm8)$Lambda), sub = NULL,
+            xlab = expression(Sigma), ylab = NULL),
+      split = c(1,1,3,1), more = TRUE)
+print(image(env(fm8)$Lambda, sub = NULL, xlab = expression(Lambda),
+            ylab = NULL),
+      split = c(2,1,3,1), more = TRUE)
+print(image(get("L", envir = env(fm8)),
+            sub = NULL, xlab = "L", ylab = NULL),
+      split = c(3,1,3,1))
+
+
+# second fit with independent random effects
+(fm9 <- lmer(Reaction ~ 1 + Days + (1|Subject) + (0+Days|Subject),
+             sleepstudy, REML = 0))
+
+# random effects
+head(ranef(fm9)[["Subject"]])
+
+# variance components
+cat(paste(capture.output(print(fm9))[8:11], collapse = "\n"), "\n")
+
+# Design Matrix Z
+print(image(t(env(fm8)$Zt),main="correlated random effects"),split=c(1,1,2,1),more=TRUE)
+print(image(t(env(fm9)$Zt),main="independet random effects"),split=c(2,1,2,1))
+
+# Structure of the Covariance Matrices
+print(image(env(fm8)$Lambda, sub = NULL, xlab = expression(Lambda),ylab = NULL,main="correlated random effects"),split = c(1,1,2,1), more = TRUE)
+print(image(env(fm9)$Lambda, sub = NULL, xlab = expression(Lambda),ylab = NULL,main="independet random effects"),split = c(2,1,2,1))
+
+# LRT
+anova(fm9, fm8)
+
+# profile
+pr9 <- profile(fm9)
+
+# Profile Zeta Plot
+print(xyplot(pr9, aspect = 1.3, layout = c(5,1)))
+
+# Confidence Intervals
+confint(pr9)
+
+# Profile Pairs Plot
+splom(pr9)
+
+
+# Plot the correlation of the random effects
+str(rr1 <- ranef(fm9))
+print(plot(rr1, type = c("g","p"), aspect = 1)$Subject,split = c(1,1,2,1), more = TRUE)
+print(plot(coef(fm9), type = c("g","p"), aspect = 1)$Subject,split = c(2,1,2,1))
+
+# Shrinkage to the mean
+df <- coef(lmList(Reaction ~ Days | Subject, sleepstudy))
+fclow <- subset(df, `(Intercept)` < 251)
+fchigh <- subset(df, `(Intercept)` > 251)
+cc1 <- as.data.frame(coef(fm9)$Subject)
+names(cc1) <- c("A", "B")
+df <- cbind(df, cc1)
+ff <- fixef(fm9)
+with(df,
+     print(xyplot(`(Intercept)` ~ Days, aspect = 1,
+                  x1 = B, y1 = A,
+                  panel = function(x, y, x1, y1, subscripts, ...) {
+                      panel.grid(h = -1, v = -1)
+                      x1 <- x1[subscripts]
+                      y1 <- y1[subscripts]
+                      larrows(x, y, x1, y1, type = "closed", length = 0.1,
+                              angle = 15, ...)
+                      lpoints(x, y,
+                              pch = trellis.par.get("superpose.symbol")$pch[2],
+                              col = trellis.par.get("superpose.symbol")$col[2])
+                      lpoints(x1, y1,
+                              pch = trellis.par.get("superpose.symbol")$pch[1],
+                              col = trellis.par.get("superpose.symbol")$col[1])
+                      lpoints(ff[2], ff[1], 
+                              pch = trellis.par.get("superpose.symbol")$pch[3],
+                              col = trellis.par.get("superpose.symbol")$col[3])
+                      ltext(fclow[,2], fclow[,1], row.names(fclow),
+                            adj = c(0.5, 1.7))
+                      ltext(fchigh[,2], fchigh[,1], row.names(fchigh),
+                            adj = c(0.5, -0.6))
+                  },
+                  key = list(space = "top", columns = 3,
+                  text = list(c("Mixed model", "Within-group", "Population")),
+                   points = list(col = trellis.par.get("superpose.symbol")$col[1:3],
+                   pch = trellis.par.get("superpose.symbol")$pch[1:3]))
+               )))
+
+
+# Regression Plots
+print(xyplot(Reaction ~ Days | Subject, sleepstudy, aspect = "xy",
+             layout = c(6,3), type = c("g", "p", "r"),
+             coef.list = df[,3:4],
+             panel = function(..., coef.list) {
+                 panel.xyplot(...)
+                 panel.abline(as.numeric(coef.list[packet.number(),]),
+                              col.line = trellis.par.get("superpose.line")$col[2],
+                              lty = trellis.par.get("superpose.line")$lty[2]
+                              )
+                 panel.abline(fixef(fm9),
+                              col.line = trellis.par.get("superpose.line")$col[4],
+                              lty = trellis.par.get("superpose.line")$lty[4]
+                              )
+             },
+             index.cond = function(x,y) coef(lm(y ~ x))[1],
+             xlab = "Days of sleep deprivation",
+             ylab = "Average reaction time (ms)",
+             key = list(space = "top", columns = 3,
+             text = list(c("Within-subject", "Mixed model", "Population")),
+             lines = list(col = trellis.par.get("superpose.line")$col[c(1:2,4)],
+             lty = trellis.par.get("superpose.line")$lty[c(1:2,4)]))))
+
+# prediction intervals for the random effects
+print(dotplot(ranef(fm9,post=TRUE),
+              scales = list(x = list(relation = "free")))[[1]])
+
+
+# ==================================================================================
+# --- Example: Orthodont ---
+# ==================================================================================
+
+library(nlme)
+
+# firstly...
+data(Orthodont)
+str(Orthodont)
+head(Orthodont)
+summary(Orthodont)
+
+# Plot the data
+plot(Orthodont)
+
+# select females
+levels(Orthodont$Sex)
+OrthoFem <- Orthodont[Orthodont$Sex=="Female",]
+plot(OrthoFem)
+
+# individual fits per subject
+fm1OrthF.lis <- lmList(distance~age, data=OrthoFem)
+coef(fm1OrthF.lis)
+
+intervals(fm1OrthF.lis)
+
+plot(intervals(fm1OrthF.lis))
+
+fm2OrthF.lis <- update(fm1OrthF.lis, distance~I(age-11))
+plot(intervals(fm2OrthF.lis))
+
+fm1OrthF <- lme(distance~age, data=OrthoFem, random=~1|Subject)
+summary(fm1OrthF)
+
+fm1OrthFM <- update(fm1OrthF,method="ML")
+summary(fm1OrthFM)
+
+fm2OrthF <- update(fm1OrthF, random=~age|Subject)
+anova(fm1OrthF,fm2OrthF)
+
+# predictions of the random effects
+ranef(fm1OrthF)
+
+# coefficients
+coef(fm1OrthF)
+
+plot(compareFits(coef(fm1OrthF),coef(fm1OrthFM)))
+
+plot(augPred(fm1OrthF),aspect="xy",grid=T)
+
+# Simulated Likelihood Ratio Test Statistics
+orthLRTsim <- simulate.lme(fm1OrthF,fm2OrthF,nsim=1000,seed=12)
+plot(orthLRTsim,df=c(1,2))
+
+fm1Orth.lm <- lm(distance~age,Orthodont)
+summary(fm1Orth.lm)
+par(mfrow=c(3,2))
+plot(fm1Orth.lm,which=1:6)
+
+fm2Orth.lm <- update(fm1Orth.lm,formula=distance~Sex*age)
+summary(fm2Orth.lm)
+fm3Orth.lm <- update(fm2Orth.lm,formula=.~.-Sex)
+summary(fm2Orth.lm)
+
+#library(lattice)
+#bwplot(get(Groups(Orthodont)~resid(fm2Orth.lm)))
+
+# separate linear regressions for each subject
+fm1Orth.lis <- lmList(Orthodont)
+print(fm1Orth.lis)
+summary(fm1Orth.lis)
+pairs(fm1Orth.lis,id=0.01,adj=-0.5)
+fm2Orth.lis <- update(fm1Orth.lis,distance~I(age-11))
+intervals(fm2Orth.lis)
+plot(intervals(fm2Orth.lis))
+
+# p. 146-155
+fm1Orth.lme <- lme(distance~I(age-11),data=Orthodont,random=~I(age-11)|Subject)
+fm1Orth.lme
+
+fm2Orth.lme <- update(fm1Orth.lme,fixed=distance~Sex*I(age-11))
+summary(fm2Orth.lme)
+
+fitted(fm2Orth.lme, level=0:1)
+resid(fm2Orth.lme,level=1)
+resid(fm2Orth.lme,level=1,type="pearson")
+
+newOrth <- data.frame(Subject=rep(c("M11","F03"), c(3,3)),Sex=rep(c("Male","Female"),c(3,3)), age=rep(16-18,2))
+predict(fm2Orth.lme,newdata=newOrth)
+predict(fm2Orth.lme, newdata=newOrth, level=0:1)
+
+fm2Orth.lmeM <- update(fm2Orth.lme,method="ML")
+summary(fm2Orth.lmeM)
+
+compOrth <- compareFits(coef(fm2Orth.lis),coef(fm1Orth.lme))
+compOrth
+plot(compOrth,mark=fixef(fm1Orth.lme))
+
+plot(comparePred(fm2Orth.lis,fm1Orth.lme,length.out=2),layout=c(8,4),between=list(y=c(0,0.5)))
+plot(compareFits(ranef(fm2Orth.lme),ranef(fm2Orth.lmeM)),mark=c(0,0))
+
+fm4Orth.lm <- lm(distance~Sex*I(age-11),Orthodont)
+summary(fm4Orth.lm)
+anova(fm2Orth.lme,fm4Orth.lm)
+
+# p. 175-179
+plot(fm2Orth.lme,Subjec~resid(.),abline=0)
+plot(fm2Orth.lme,resid(.,type="p")~fitted(.)|Sex,id=0.05,adj=-0.3)
+
+fm3Orth.lme <- update(fm2Orth.lme,weights=varIdent(form=~1|Sex))
+fm3Orth.lme
+
+plot(fm3Orth.lme,distance~fitted(.),id=0.05,adj=-0.3)
+
+anova(fm2Orth.lme,fm3Orth.lme)
+
+qqnorm(fm3Orth.lme,~resid(.)|Sex)
+
+# 188 - 191
+qqnorm(fm2Orth.lme,~ranef(.),id=0.10,cex=0.7)
+
+pairs(fm2Orth.lme,~ranef(.)|Sex,id=~Subject=="M13",adju=-0.3)
+
+# 208 - 214
+vf1Fixed <- varFixed(~age)
+vf1Fixed <- initialize(vf1Fixed,data=Orthodont)
+varWeights(vf1Fixed)
+
+vf1Ident <- varIdent(c(Femal=0.5),~1|Sex)
+vf1Ident <- initialize(vf1Ident,Orthodont)
+varWeights(vf1Ident)
+
+vf2Ident <- varIdent(form=~1|Sex,fixed=c(Female=0.5))
+vf2Ident(initialize(vf2Ident,Orthodont))
+varWeights(vf2Ident)
+
+vf3Ident <- varIdent(form=~1|Sex*age)
+vf3Ident <- initialize(vf3Ident,Orthodont)
+varWeights(vf3Ident)
+
+vf1Power <- varPower(1)
+vf2Power <- varPower(fixed=0.5)
+vf3Power <- varPower(from=~fitted(.)|Sex,fixed=list(Male=0.5,Female=0))
+
+vf1Exp <- varExp(from=~age|Sex,fixed=c(Female=0))
+
+# 234-239
+cs1CompSymm <- initialize(cs1CompSymm,data=Orthodont)
+
+
+
+
+# ==================================================================================
+# --- Example: classroom ---
+# ==================================================================================
+
+# Load the data into R
+classroom <-  within(read.csv("http://www-personal.umich.edu/~bwest/classroom.csv"),
+           {
+               classid <- factor(classid)
+               schoolid <- factor(schoolid)
+               sex <- factor(sex, labels = c("M","F"))
+               minority <- factor(minority, labels = c("N", "Y"))
+           })
+classroom$childid <- NULL
+
+# Step 0: Exploring the data set
+# ------------------------------
+library(lme4a)
+
+# firstly...
+str(classroom)
+head(classroom)
+summary(classroom)
+
+# plotting the data set
+lsch <- names(which(xtabs(~ schoolid, unique(subset(classroom, select=c(schoolid,classid)))) == 5))
+funiq <- function(x) if(is.factor(x)) factor(x) else x
+cl <- within(do.call(data.frame,lapply(subset(classroom, schoolid %in% lsch),
+                                       funiq)),
+         {
+             sch <- reorder(schoolid, mathgain)
+             cls <- reorder(reorder(classid, mathgain), as.numeric(schoolid))
+         })
+print(dotplot(cls ~ mathgain | sch, cl, pch = 21,
+              strip = FALSE, strip.left = TRUE, layout = c(1, 12),
+              scales = list(y = list(relation = "free")),
+              ylab = "Classroom within school", type = c("p", "a"),
+              xlab = "Gain in Mathematics score from kindergarten to first grade",
+              jitter.y = TRUE))
+
+# is classid nest in schoolid?
+with(classroom, lme4a:::isNested(classid, schoolid))
+
+classroom <- classroom[!as.logical(apply(is.na(classroom),1,sum)),]
+dim(classroom)
+
+# Step 1: initial means-only model
+# --------------------------------
+
+# Mean-Level only with random effects of level 2 and 3
+(fm09 <- lmer(mathgain ~ (1|classid) + (1|schoolid), classroom))
+
+# Look at Model Matrix Z and Z^TZ
+image(t(env(fm09)$Zt))
+image(env(fm09)$Zt%*%t(env(fm09)$Zt))
+
+# Lambda
+image(env(fm09)$Lambda)
+
+# Prediction Intervals on the random effects
+qrr09 <- dotplot(ranef(fm09, postVar = TRUE), strip = FALSE)
+print(qrr09[[1]], pos = c(0,0,1,0.75), more = TRUE)
+print(qrr09[[2]], pos = c(0,0.65,1,1))
+
+# Profiling the fitted model
+pr09 <- profile(fm09)
+
+# Profile zeta and |zeta| Plot
+xyplot(pr09,aspect=1.3)
+xyplot(pr09,aspect=1.3,absVal=TRUE)
+
+# Confidence Intervals
+confint(pr09)
+
+# Profile pairs Plot
+splom(pr09)
+
+# Model without classid
+(fm10 <- lmer(mathgain ~ (1|schoolid), classroom),REML=FALSE))
+
+# Compare fm09 and fm10: Keep fm09
+fm09 <- lmer(mathgain ~ (1|classid) + (1|schoolid), classroom,REML=TRUE)
+fm10 <- lmer(mathgain ~ (1|schoolid), classroom,REML=TRUE)
+anova(fm09,fm10)
+
+# Compare fm09 and fm10 by LRT-Test
+diffREML <- deviance(fm10)-deviance(fm09)
+pvalue <- (0.5*(1-pchisq(diffREML,0))+0.5*(1-pchisq(diffREML,1)))
+
+# ==> fm09ML
+
+
+# Step 2: Adding Level 1 Covariates (see slides)
+# ----------------------------------------------
+
+(fm11ML <- lmer(mathgain ~ I(mathkind-450) + sex + minority + ses + (1|schoolid) + (1|classid),classroom, na.action = "na.omit",REML=FALSE))
+(fm09ML <- lmer(mathgain ~ (1|classid) + (1|schoolid), classroom,REML=FALSE))
+
+anova(fm09ML,fm11ML)
+
+# ==> fm11ML
+
+# Step 3: Adding Level 2 Covariates (see slides)
+# ----------------------------------------------
+
+(fm12ML <- lmer(mathgain ~  I(mathkind-450) + sex + minority + ses + yearstea + mathprep + mathknow + (1|schoolid) + (1|classid),
+                 classroom, REML=FALSE))
+
+anova(fm12ML,fm11ML)
+
+# ==> fm11ML
+
+
+# Step 4: Adding Level 3 Covariates (see slides)
+# ----------------------------------------------
+
+(fm13ML <- lmer(mathgain ~  I(mathkind-450) + sex + minority + ses + yearstea + housepov +(1|schoolid) + (1|classid),
+                 classroom, REML=FALSE, na.action = "na.omit"))
+
+anova(fm11ML,fm13ML) # so fm12ML is the final model
+
+# ==> fm11ML is the final model
+
+# Step 5: Examining the final model
+# ---------------------------------
+
+(fm11 <- lmer(mathgain ~ I(mathkind-450) + sex + minority + ses + (1|schoolid) + (1|classid),classroom))
+
+
+# Prediction Intervals on the random effects
+qrr11 <- dotplot(ranef(fm11, postVar = TRUE), strip = FALSE)
+print(qrr11[[1]], pos = c(0,0,1,0.75), more = TRUE)
+print(qrr11[[2]], pos = c(0,0.65,1,1))
+
+# Profiling the fitted model
+pr11 <- profile(fm11)
+
+# Profile zeta and |zeta| Plot
+xyplot(pr11,aspect=1.3)
+xyplot(pr11,aspect=1.3,absVal=TRUE)
+
+# Confidence Intervals
+confint(pr11)
+
+# Profile pairs Plot
+splom(pr11)
+
+# Step 6: Model Diagnostic
+# ------------------------
+trellis.device(color=F)
+library(lme4) # for simplicity ;-)
+fm11ML <- lmer(mathgain ~ mathkind + sex + minority + ses + (1|schoolid) + (1|classid),classroom, na.action = "na.omit",REML=FALSE)
+
+# QQ-Plot of the classroom random effects
+qqnorm(ranef(fm11ML)$classid[[1]])
+qqline(ranef(fm11ML)$classid[[1]])
+
+# QQ-Plot of the school random effects
+qqnorm(ranef(fm11ML)$schoolid[[1]])
+qqline(ranef(fm11ML)$schoolid[[1]])
+
+# QQ-Plot of the residual
+qqnorm(resid(fm11ML))
+qqline(resid(fm11ML))
+
+# Tukey-Anscombe plot
+plot(resid(fm11ML,type="p")~fitted(fm11ML))
+abline(h = 0, lty = 2)   
