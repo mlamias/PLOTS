@@ -1,0 +1,11 @@
+install.packages('gsheet')
+
+library(gsheet)
+data <- read.csv(text = 
+  gsheet2text('https://docs.google.com/spreadsheets/d/1zIpDAf_n6jSH2eKYlyM24x7YncWe41I7-Nvh5RPwYTI/edit?usp=sharing',
+  format ='csv'))
+
+head(data)
+
+
+boxplot(frequency ~ subject, data=data)
