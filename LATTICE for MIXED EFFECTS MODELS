@@ -1,12 +1,19 @@
 ## It produces lines of different colors for each individual or "Subject".
 ## 'g' is for 'grid'.
 
+library(lattice)
 xyplot(distance~age|Sex, groups = Subject, type = c('g','l'), data=Orthodont)
 
 =======================================================================================================================================================================
-
+library(lattice)
 library(nlme)
 
-head(Rail)
 xyplot(travel~Rail,data=Rail,groups=Rail,
-       pch=19,type=c('g','p'))
+       pch=19,type=c('g','p'),
+
+panel=function(x, y, ...) {
+  panel.xyplot(x, y, ...);
+  ltext(x=x, y=y, labels=seq_along(x), 
+        pos=3, offset=-1, cex=0.8)
+})
+
