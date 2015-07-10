@@ -2,3 +2,11 @@
 ## 'g' is for 'grid'.
 
 xyplot(distance~age|Sex, groups = Subject, type = c('g','l'), data=Orthodont)
+
+=======================================================================================================================================================================
+
+library(nlme)
+
+head(Rail)
+xyplot(travel~Rail,data=Rail,groups=Rail,
+       pch=19,type=c('g','p'))
