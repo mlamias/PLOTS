@@ -1,0 +1,4 @@
+## It produces lines of different colors for each individual or "Subject".
+## 'g' is for 'grid'.
+
+xyplot(distance~age|Sex, groups = Subject, type = c('g','l'), data=Orthodont)
