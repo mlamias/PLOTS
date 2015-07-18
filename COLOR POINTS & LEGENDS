@@ -1,0 +1,11 @@
+# With plot:
+
+plot(Sepal.Length ~ Sepal.Width, main="Iris Data", pch=19, cex=0.5, 
+    col=as.numeric(iris$Species) + 1, data=iris)
+legend("topleft",legend=levels(iris$Species), 
+    text.col=seq_along(levels(factor(iris$Species)))+1)
+
+# With qplot:
+
+library(ggplot2)
+qplot(Sepal.Width, Sepal.Length, data = iris, color = Species)
