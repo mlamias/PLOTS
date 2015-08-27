@@ -1,0 +1,27 @@
+set.seed(0)
+tests <- 0
+for(i in 1:1e4){
+    x <- rnorm(500, 10, 5)
+    y <- rnorm(500, 10, 5)
+    tests[i] <- as.numeric(t.test(x, y)[1])
+}
+
+
+dens <- density(tests)
+plot(dens, lwd=8, type = "l", lty=2,
+     col='darkslateblue', main = "t-Test Statitics",
+     xlab='t-test statistic', ylab="Density")
+
+x1 <- min(which(dens$x >= 0.0917))  
+x2 <- max(which(dens$x <  2.8))
+with(dens, polygon(x=c(x[c(x1,x1:x2,x2)]), 
+    y= c(0, y[x1:x2]-0.01, 0), col="gray80"),
+    border="darkblue")
+
+pvalue <- 0
+for(i in 1:1e4){
+    x <- rnorm(500, 10, 5)
+    y <- rnorm(500, 10, 5)
+    pvalue[i] <- as.numeric(t.test(x, y)[3])
+}
+mean(pvalue<0.05)
