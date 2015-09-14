@@ -6,8 +6,11 @@ par(mfrow=c(1,2))
 # BETWEEN GROUP VARIANCE:
 
 plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', 
-     main = "MODEL VARIATION", sub='green = variation accounted for by the model')
+     main = "MODEL VARIATION", 
+     sub='green = variation accounted for by the model',
+     ylim = c(7, 35))
 abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
+
 abline(fit1, lwd = 2, col ='sienna')
 
 line <- c(mean(mtcars$mpg), 0)
@@ -21,9 +24,11 @@ errors.coord <- function(x0, y0, line){
 
 ss <- errors.coord(mtcars$wt, mtcars$mpg, line)
 
-segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='green')
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, 
+         col='green')
 
-segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, col='red')
+segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, 
+         col='red')
 
 points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
@@ -31,8 +36,12 @@ points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
 # WITHIN GROUP VARIANCE:
 
-plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "RESIDUALS", sub= 'red = residual variation')
-abline(fit1, lwd = 2, col ='wheat')
+plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', 
+     main = "RESIDUALS", sub= 'red = residual variation',
+     ylim = c(7, 35))
+
+abline(fit1, lwd = 2, col ='sienna')
+
 abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
 
 a <- coefficients(fit1)[1]
@@ -60,7 +69,8 @@ lengths <- (old.points[,1] - new.points[,1]) +
 (RSS <- sum(lengths^2))
 
 
-segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, col='red')
+segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, 
+         col='red')
 
 points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
