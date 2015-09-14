@@ -3,11 +3,10 @@
 # install.packages('gsheet')
 
 library(gsheet)
-rats <- read.csv(text = 
+dat <- read.csv(text = 
   gsheet2text('https://docs.google.com/spreadsheets/d/1X9ccexhCU2xNI99MDj6WWRdOza1J_IbTSI-yuPDsxOE/edit?usp=sharing',
   format ='csv'))
 
-dat<-read.csv(file.choose())
 head(dat)
 colnames(dat)[7] <- "lattice"
 colnames(dat)[2] <- "atomic.no"
