@@ -1,5 +1,4 @@
 fit1 <- lm(mpg ~ wt, mtcars)          #mpg regressed on weight of the car
-fit2 <- lm(mpg ~ wt + qsec, mtcars)   #mpg regressed on weight and qsec
 
 par(mfrow=c(1,2))
 
@@ -23,7 +22,14 @@ errors.coord <- function(x0, y0, line){
 
 ss <- errors.coord(mtcars$wt, mtcars$mpg, line)
 
+old.points <- cbind(ss$x0, ss$y0)
 new.points <- cbind(ss$x1, ss$y1)
+
+lengths <- (old.points[,1] - new.points[,1]) +
+           (old.points[,2] - new.points[,2])
+
+(RSS <- sum(lengths^2))
+
 
 segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='darkred')
 
