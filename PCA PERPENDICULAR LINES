@@ -137,6 +137,8 @@ perp.segment.coord <- function(x0, y0, line1){
   b <- line1[2]  #slope
   
   x1 <- (x0 + b * y0 - a * b)/(1 + b^2)
+  
+  #This formula is easily derived - check post: http://math.stackexchange.com/questions/62633/orthogonal-projection-of-a-point-onto-a-line
   y1 <- a + b * x1
   list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
 }
