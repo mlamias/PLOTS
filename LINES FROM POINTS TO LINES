@@ -1,0 +1,52 @@
+fit1 <- lm(mpg ~ wt, mtcars)          #mpg regressed on weight of the car
+fit2 <- lm(mpg ~ wt + qsec, mtcars)   #mpg regressed on weight and qsec
+
+par(mfrow=c(1,2))
+
+# WITHIN GROUP VARIANCE:
+
+plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50')
+abline(fit1, lwd = 2, col ='wheat')
+
+
+a <- coefficients(fit1)[1]
+b <- coefficients(fit1)[2]
+
+line <- c(a, b)
+
+errors.coord <- function(x0, y0, line){
+  
+  x1 <- x0
+  y1 <- predict(fit1, data.frame(wt = x0))
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss <- errors.coord(mtcars$wt, mtcars$mpg, line)
+
+new.points <- cbind(ss$x1, ss$y1)
+
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='darkred')
+
+points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
+
+
+# BETWEEN GROUP VARIANCE:
+
+plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50')
+abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
+abline(fit1, lwd = 2, col ='wheat')
+
+line <- c(mean(mtcars$mpg), 0)
+
+errors.coord <- function(x0, y0, line){
+  
+  x1 <- x0
+  y1 <- mean(mtcars$mpg)
+  list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
+}
+
+ss <- errors.coord(new.points[,1], new.points[,2], line)
+
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='darkred')
+
+points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
