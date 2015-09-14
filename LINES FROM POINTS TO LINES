@@ -7,7 +7,7 @@ par(mfrow=c(1,2))
 
 plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "MODEL VARIATION")
 abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
-abline(fit1, lwd = 2, col ='wheat')
+abline(fit1, lwd = 2, col ='sienna')
 
 line <- c(mean(mtcars$mpg), 0)
 
@@ -18,9 +18,11 @@ errors.coord <- function(x0, y0, line){
   list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
 }
 
-ss <- errors.coord(new.points[,1], new.points[,2], line)
+ss <- errors.coord(mtcars$wt, mtcars$mpg, line)
 
-segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='darkred')
+segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='green')
+
+segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, col='red')
 
 points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
@@ -30,24 +32,26 @@ points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
 plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "RESIDUALS")
 abline(fit1, lwd = 2, col ='wheat')
-
+abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
 
 a <- coefficients(fit1)[1]
 b <- coefficients(fit1)[2]
 
-line <- c(a, b)
+line2 <- c(a, b)
 
-errors.coord <- function(x0, y0, line){
+errors.coord2 <- function(x0, y0, line){
   
   x1 <- x0
+  
   y1 <- predict(fit1, data.frame(wt = x0))
+  
   list(x0 = x0, y0 = y0, x1 = x1, y1 = y1)
 }
 
-ss <- errors.coord(mtcars$wt, mtcars$mpg, line)
+ss2 <- errors.coord2(mtcars$wt, mtcars$mpg, line2)
 
-old.points <- cbind(ss$x0, ss$y0)
-new.points <- cbind(ss$x1, ss$y1)
+old.points <- cbind(ss2$x0, ss2$y0)
+new.points <- cbind(ss2$x1, ss2$y1)
 
 lengths <- (old.points[,1] - new.points[,1]) +
            (old.points[,2] - new.points[,2])
@@ -55,8 +59,10 @@ lengths <- (old.points[,1] - new.points[,1]) +
 (RSS <- sum(lengths^2))
 
 
-segments(x0 = ss$x0, x1 = ss$x1, y0 = ss$y0, y1 = ss$y1, col='darkred')
+segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, col='red')
 
 points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
+
+
 
 
