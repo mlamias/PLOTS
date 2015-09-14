@@ -5,7 +5,8 @@ par(mfrow=c(1,2))
 
 # BETWEEN GROUP VARIANCE:
 
-plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "MODEL VARIATION")
+plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', 
+     main = "MODEL VARIATION", sub='green = variation accounted for by the model')
 abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
 abline(fit1, lwd = 2, col ='sienna')
 
@@ -30,7 +31,7 @@ points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
 
 # WITHIN GROUP VARIANCE:
 
-plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "RESIDUALS")
+plot(mpg ~ wt, mtcars, pch = 19, col = 'gray50', main = "RESIDUALS", sub= 'red = residual variation')
 abline(fit1, lwd = 2, col ='wheat')
 abline(h = mean(mtcars$mpg), lwd = 2, col ='darkorange')
 
@@ -62,7 +63,5 @@ lengths <- (old.points[,1] - new.points[,1]) +
 segments(x0 = ss2$x0, x1 = ss2$x1, y0 = ss2$y0, y1 = ss2$y1, col='red')
 
 points(mpg ~ wt, mtcars, col = 'gray50', pch = 19)
-
-
 
 
