@@ -1,0 +1,29 @@
+require(gsheet)
+
+data <- read.csv(text = 
+        gsheet2text('https://docs.google.com/spreadsheets/d/1QgtDcGJebyfW7TJsB8n6rAmsyAnlz1xkT3RuPFICTdk/edit?usp=sharing',
+        format ='csv'))
+
+head(data)
+
+library(scatterplot3d)
+# http://www.r-bloggers.com/getting-fancy-with-3-d-scatterplots/
+
+s3d <- with(data, scatterplot3d(Caffeine, Time, Recall, color = as.numeric(Subject),
+        type = 'h', pch = 19))
+
+lm <- lm(Recall ~ Caffeine + Time, data)
+s3d$plane3d(lm)
+legend(s3d$xyz.convert(150,5,70), pch = 19,
+       legend = levels(data$Subject), col = seq_along(levels(data$Subject)))
+
+
+library(rgl); library(car); library("RColorBrewer")
+# http://www.r-bloggers.com/choosing-colour-palettes-part-ii-educated-choices/
+# http://stackoverflow.com/questions/14698866/r-3d-plot-with-categorical-colors
+
+colors <- brewer.pal(n = 5, name = "Set1")
+scatter3d(x = data$Caffeine, y = data$Recall, z = data$Time, groups = data$Subject,
+    ellipsoid = F, fit = "smooth", grid = F, surface = T, surface.col = colors,
+    xlab = "Caffeine", ylab = "Recall", zlab = "Time")
+rgl.snapshot(filename="scat1.png", fmt="png")
