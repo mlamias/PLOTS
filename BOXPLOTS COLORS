@@ -1,0 +1,2 @@
+colors=c("wheat1", "wheat3", "wheat4")
+boxplot(Recall ~ Emotion, data, col = colors, ylab="Recall Rate")
