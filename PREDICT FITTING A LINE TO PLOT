@@ -1,0 +1,10 @@
+attach(mtcars)
+fit <- lm(mpg ~ wt, mtcars)
+
+
+
+new <- data.frame(wt = seq(0:5))
+
+
+plot(mpg ~ wt)
+lines(new$wt, predict(fit, new))
