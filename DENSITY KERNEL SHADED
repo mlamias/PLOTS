@@ -1,10 +1,13 @@
+# Used in here: http://stats.stackexchange.com/q/175141/67822
+
+means <- replicate(1e6, mean(rnorm(100, 100, 10)))
 
 par(bg="gray95")
 
 d <- density(means)
 plot(d, xlab = "[Glucose]", 
      main="Distribution Samples of 100",
-     lwd=6, col='lightslategray')
+     lwd=6, col='turquoise')
 
 
 x1 <- min(which(d$x > 80))  
@@ -15,9 +18,10 @@ with(d, polygon(x=c(x[c(x1,x1:x2,x2)]), y= c(0, y[x1:x2], 0),
 x1 <- min(which(d$x > 98))  
 x2 <- max(which(d$x <  104))
 with(d, polygon(x=c(x[c(x1,x1:x2,x2)]), y= c(0, y[x1:x2]-0.001, 0), 
-                border="lightslategray",col="gray70"))
+                border="turquoise",col="gray70"))
 
 abline(v=98, col="gray30", lty=2, lwd=2)
 abline(h=-0.001,col="gray30",lwd=3, lty=3)
+
 
 
