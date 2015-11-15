@@ -1,6 +1,27 @@
+# Code for this post: http://stats.stackexchange.com/a/181887/67822
+
+par(mfrow=c(1,1))
+par(bg="gray50")
+x <- seq(from = - 5, to = 6, by = 0.001)
+y <- dnorm(x)
+plot(y ~ x, type="l", xlim=c(-5,5), lwd=7, col="orange",
+     main = "Gosset's distribution tails compared to Normal")
+colfunc <- colorRampPalette(c("lightyellow", "lightyellow4"))
+for(i in 1:30){
+  z <- dt(x, df = i)
+  lines(z ~ x, col = colfunc(i))
+}
+
+text(c(0,4.1),c(0.04,.04),
+     labels=c("Normal","t-Student different df's"),
+     col = c("orange","lightyellow",cex = 4))
+
+
+
 
 x <- seq(from=-5,to=6,by=0.001)
 y <- dnorm(x)
+par(bg="gray90")
 par(mfrow=c(2,1))
 par(mar=c(3,2,2,2))
 plot(x, y, type="l", col="dodgerblue4", lwd=1, 
@@ -19,7 +40,7 @@ x <-seq(qnorm(0.95),3.5,length=100)
 polygon(c(x, rev(x)), c(dnorm(x), rep(0, length(x))), 
         col=rgb(0,0,0.9,0.8))
 abline(v=qnorm(0.95,lower.tail = T), lwd=1, 
-        col="dodgerblue4")
+       col="dodgerblue4")
 
 
 text(c(3,3),c(0.1,.2),
@@ -32,17 +53,17 @@ z <- dt(x,df = 2)
 plot(z ~ x, type="l", lwd=1, col="firebrick",
      main="Power and Rejection Zone t test")
 abline(v=qt(0.95,df = 2,lower.tail = T),lwd=1,col="firebrick")
-z2 <- dt(x-3,df = 2)
+z2 <- dt(x,df = 2,ncp = 2)
 lines(z2 ~ x, type="l", lwd=1, col="firebrick")
 
 x <-seq(qt(0.95,2), 6,length=100)
-polygon(c(x, rev(x)), c(dt(x-3,df = 2), rep(0, length(x))), 
+polygon(c(x, rev(x)), c(dt(x,df = 2, ncp=2), rep(0, length(x))), 
         col=rgb(0.9,0,0,0.4))
-x <-seq(qt(0.95,2),6,length=100)
+x <-seq(qt(0.95,2), 6,length=100)
 polygon(c(x, rev(x)), c(dt(x,2), rep(0, length(x))), 
         col=rgb(0.9,0,0,0.8))
 abline(v=qt(0.95,df = 2,lower.tail = T),lwd=1,col="firebrick")
 
-text(c(4.3,3.8),c(0.04,.1),
+text(c(4.3,3.6),c(0.04,.09),
      labels=c("Alpha Risk","Power"),
      col = c(rgb(0.9,0,0,0.8),"firebrick4",cex = 1.2))
