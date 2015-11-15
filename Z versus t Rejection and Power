@@ -1,0 +1,48 @@
+
+x <- seq(from=-5,to=6,by=0.001)
+y <- dnorm(x)
+par(mfrow=c(2,1))
+par(mar=c(3,2,2,2))
+plot(x, y, type="l", col="dodgerblue4", lwd=1, 
+     ylab = '', xlab = '', xlim=c(-5, 6),
+     main="Power and Rejection Zone Z test")
+abline(v=qnorm(0.95,lower.tail = T), lwd=1, 
+       col="dodgerblue4")
+
+y2 <- dnorm(x, mean = 3, sd=1)
+lines(y2 ~ x, type="l", lwd=1, col="dodgerblue4")
+
+x <-seq(qnorm(0.95), qnorm(0.999,3,1),length=100)
+polygon(c(x, rev(x)), c(dnorm(x,3,1), rep(0, length(x))), 
+        col=rgb(0,0,0.9,0.4))
+x <-seq(qnorm(0.95),3.5,length=100)
+polygon(c(x, rev(x)), c(dnorm(x), rep(0, length(x))), 
+        col=rgb(0,0,0.9,0.8))
+abline(v=qnorm(0.95,lower.tail = T), lwd=1, 
+        col="dodgerblue4")
+
+
+text(c(3,3),c(0.1,.2),
+     labels=c("Alpha Risk","Power"),
+     col = c("dodgerblue4","darkblue"),cex = 1.2)
+
+
+x <- seq(from=-5,to=6,by=0.001)
+z <- dt(x,df = 2)
+plot(z ~ x, type="l", lwd=1, col="firebrick",
+     main="Power and Rejection Zone t test")
+abline(v=qt(0.95,df = 2,lower.tail = T),lwd=1,col="firebrick")
+z2 <- dt(x-3,df = 2)
+lines(z2 ~ x, type="l", lwd=1, col="firebrick")
+
+x <-seq(qt(0.95,2), 6,length=100)
+polygon(c(x, rev(x)), c(dt(x-3,df = 2), rep(0, length(x))), 
+        col=rgb(0.9,0,0,0.4))
+x <-seq(qt(0.95,2),6,length=100)
+polygon(c(x, rev(x)), c(dt(x,2), rep(0, length(x))), 
+        col=rgb(0.9,0,0,0.8))
+abline(v=qt(0.95,df = 2,lower.tail = T),lwd=1,col="firebrick")
+
+text(c(4.3,3.8),c(0.04,.1),
+     labels=c("Alpha Risk","Power"),
+     col = c(rgb(0.9,0,0,0.8),"firebrick4",cex = 1.2))
