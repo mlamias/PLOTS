@@ -1,0 +1,18 @@
+curve(dnorm(x, 0.5, 0.22), xlim=c(-0.5,1.5))
+curve(dbeta(x,2,2), add=T) #Chi-square with 1 degree of freedom
+
+x <- seq(-1.96, 1.96, len = 100)
+
+polygon(c(-0.5, x, 1.5), c(dbeta(-0.5,2,2), 
+                           dbeta(x,2,2), 
+                           dbeta(1.5,2,2)),
+        col = rgb(.35,0.31,0.61, alpha=0.9), 
+        border = "black",
+        lwd=2)
+
+polygon(c(-0.5, x, 1.5), c(dnorm(-0.5,0.5,0.22), 
+                           dnorm(x,0.5,0.22), 
+                           dnorm(1.5,0.5,0.22)),
+        col = rgb(1,1,0, alpha=0.7), 
+        border = "black",
+        lwd=2)
