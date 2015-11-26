@@ -1,20 +1,20 @@
-Apropos of the following posts:
+# Apropos of the following posts:
 
-http://stats.stackexchange.com/q/94106/67822
-http://stats.stackexchange.com/a/183647/67822
-http://stats.stackexchange.com/a/101290/67822
+# http://stats.stackexchange.com/q/94106/67822
+# http://stats.stackexchange.com/a/183647/67822
+# http://stats.stackexchange.com/a/101290/67822
 
-The presence of asymptotic values in a t distribution really messes up the histogram. This can be addressed by establishing
-limits to the x axis of the histogram, and increasing the number of breaks:
+# The presence of asymptotic values in a t distribution really messes up the histogram. This can be addressed by establishing
+# limits to the x axis of the histogram, and increasing the number of breaks:
 
 set.seed(99); n <- 1e4; y <- rt(n, df = 2); summary(y); 
 hist(y, xlim=c(-5,5), breaks=2000)
 
-However, the qqnorm will still be rather distorted:
+# However, the qqnorm will still be rather distorted:
 
 qqnorm(y)
 
-To address this problem, we can get rid of asymptotic values:
+# To address this problem, we can get rid of asymptotic values:
 
 y <- y[y > quantile(x, .25) - 1.5 * IQR(y) &
        y < quantile(x, .75) + 1.5 * IQR(y)]
