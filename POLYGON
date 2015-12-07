@@ -1,15 +1,31 @@
-par(bg="gray90")
-x <- seq(from=0,to=2,by = 0.001)
-y <- log(x)
-plot(y ~ x,type="l", col="gray30", lwd=3, xlim=c(-.01,1), ylim=c(-2,1.5), 
-     main = "ln(1 + x) ~ x, if x << 0")
-abline(h=0)
-abline(v=1)
-abline(v=0)
-abline(h = 1)
-z <- log(x + 1)
-lines(z ~ x, col="darkblue", lwd = 3)
-lines(x, x, col="deepskyblue", lwd=3)
-polygon(c(x,rev(x)),c(z,rev(x)),col=rgb(0,0,1, 0.3), border = NA)
-text(c(.8,.8,.8),c(-0.5,.2,0.9),labels=c("y = ln(x)","y = ln(1 + x)","y = x"),
-     col = c("gray30","darkblue","deepskyblue"),cex = 1.2)
+x <- seq(-2.5,2.5,0.01)
+y <- dnorm(x)
+plot(x,y, type='l', lwd = 3, col = "gray50", xaxt = "n")
+axis(1, at = seq(-2.5,2.5,0.5))
+
+
+
+xrun <- seq(0,1.5,0.01)
+yrun <- dnorm(xrun)
+
+polygon(c(0,xrun,1.5), c(.01,yrun,.01),density = 10, angle=45, border = F)
+lines(x, y, lwd = 3, col = "gray50")
+
+
+xrun <- seq(0,1,0.01)
+yrun <- dnorm(xrun)
+polygon(c(0,xrun,1), c(.01,yrun,.01), col = rgb(0,0,0.9,0.4), border = F)
+
+xrun <- seq(1,2,0.01)
+yrun <- dnorm(xrun)
+polygon(c(1,xrun,2), c(.01,yrun,.01), col = rgb(0,0,0.9,0.1), border = F)
+
+xrun <- seq(0, 2, 0.01)
+polygon(c(0, xrun, 2), c(0.01, replicate(length(xrun), dnorm(1.5)), 0.01), 
+        density = 5, angle=-45, border = T)
+pnorm(2) - 0.5 - pnorm(1) - 0.5
+
+pnorm(1) - 0.5
+
+text(1.7, 0.03, "0.4772")
+text(0.7, 0.03, "0.3413")
