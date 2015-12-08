@@ -1,0 +1,9 @@
+require(rms)  # also need to have Hmisc installed
+require(lattice)
+ddI <- datadist(mtcars)
+options(datadist="ddI")
+fit <- ols(mpg ~ wt*hp, data=mtcars)
+bplot(Predict(fit, wt=1.5:5.5, hp=52:335), 
+      lfun = wireframe, col=rgb(0,0,0.8,0.2),
+      screen = list(z = -65, x = -75), drape=F,
+      main="Interaction Effect mpg ~ wt * hp")
