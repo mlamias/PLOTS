@@ -63,11 +63,12 @@ head(df)
 # Again epsilon is 0.75 ... Ready:
 
 fit <-  lmer(glucose ~ AAA + (1 | athletes), data = df)
-summary(fit2)
+summary(fit)
 
 library(ggplot2)
 p <- ggplot(df, aes(x = AAA, y = glucose, 
                         colour = as.factor(athletes))) +
-    geom_point(size=3) +
-    geom_line(aes(y = predict(fit)), size=1) 
+    geom_point(size=2) +
+    geom_line(aes(y = predict(fit)), size=1) +
+    ggtitle("Effect of AAA on Glucose\nAthletes as Random Intercepts")
 print(p)
