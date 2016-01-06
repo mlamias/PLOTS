@@ -1,0 +1,73 @@
+# From http://anythingbutrbitrary.blogspot.in/2012/10/hierarchical-linear-models-and-lmer.html
+
+# WE LOOK AT THE REGRESSION OF [GLUCOSE] ~ [AMINOACID_A] IN 10 athletes after 15 races:
+
+# we'll make the sd of the slopes between athletes 0.5, 
+# and the sd between intercepts of different athletes 0.2
+# Further we'll establish a correlation between intercepts and slopes of 0.8.
+
+rm(list = ls())
+set.seed(0)
+library(mvtnorm)
+
+athletes = 10
+races = 15
+
+# Setting up covariance matrix:
+
+i = 0.2 # sd between intercepts
+s = 0.5 # sd between slopes
+r = 0.8 # correlation between intercepts and slopes
+
+(cov.matrix <-  matrix(c(i^2, r * i * s, r * i * s, s^2), nrow = 2, byrow = T))
+
+# Getting a random sample from this bi-variate normal distribution for each athlete:
+
+random.effects <-  rmvnorm(athletes, mean = c(0, 0), sigma = cov.matrix)
+
+athletes.df = data.frame(athletes = c(1:athletes)) 
+
+# We establish now the mean of these random intercepts and slopes:
+
+athletes.df$alpha = 1 + random.effects[, 1]
+athletes.df$beta =  2 + random.effects[, 2]
+
+head(athletes.df, 3)
+
+summary(athletes.df$beta)  # The mean is the slope in the fixed effects
+sd(athletes.df$beta)       # The sd of the slopes as random effects (we wanted 0.5)
+summary(athletes.df$alpha) # The intercept has a mean of 1: (Intercept) fixed eff's
+sd(athletes.df$alpha)      # with a SD intercept as random eff (we wanted 0.2)
+
+#SO THERE IS CORRELATION BETWEEN INTERCEPTS AND SLOPES OF 0.9 WITHIN A SINGLE ATHLETE,
+#AND BOTH INTERCEPTS AND SLOPES HAVE COMMON MEAN AND SD ACROSS ATHLETES.
+
+# Total number of observations:
+
+observations <- athletes * races
+
+observations.df <-  data.frame(athletes = sort(rep(c(1:athletes), races)), 
+                               races = rep(c(1:races), athletes), 
+                               AAA = rep(rnorm(athletes * races, 50, 5)))
+# Again we give [AAA] a mean of 50 and sd of 5 as in the simulation with random slopes:
+
+# Merging the [AAA] dataframe with the dataframe of coefficients: 
+
+df <-  merge(athletes.df, observations.df)
+head(df)
+
+# And calculating the [glucose]:
+
+df <-  within(df, glucose <-  alpha + AAA * beta + 0.75 * rnorm(n = observations))
+head(df)
+# Again epsilon is 0.75 ... Ready:
+
+fit <-  lmer(glucose ~ AAA + (1 | athletes), data = df)
+summary(fit2)
+
+library(ggplot2)
+p <- ggplot(df, aes(x = AAA, y = glucose, 
+                        colour = as.factor(athletes))) +
+    geom_point(size=3) +
+    geom_line(aes(y = predict(fit)), size=1) 
+print(p)
