@@ -67,8 +67,22 @@ summary(fit)
 
 library(ggplot2)
 p <- ggplot(df, aes(x = AAA, y = glucose, 
-                        colour = as.factor(athletes))) +
+        colour = as.factor(athletes))) +
     geom_point(size=2) +
-    geom_line(aes(y = predict(fit)), size=1) +
+    geom_line(aes(y = predict(fit)), size=0.5) +
     ggtitle("Effect of AAA on Glucose\nAthletes as Random Intercepts")
 print(p)
+
+require(lattice)
+xyplot(fitted(fit) ~ AAA | athletes, groups=athletes, 
+    data=df, type=c('p','r'), pch=19,
+    auto.key=F, main="Fitted Values",
+    ylab="Predicted Glucose")
+
+install.packages("coefplot2",
+                 repos="http://www.math.mcmaster.ca/bolker/R",
+                 type="source")
+library(coefplot2)
+coefplot2(fit)
+coefficients(fit)
+
