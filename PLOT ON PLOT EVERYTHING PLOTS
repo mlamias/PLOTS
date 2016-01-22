@@ -1,0 +1,43 @@
+x  <- seq(-3, 3, 0.05)
+
+y <- dnorm(x)
+z <- pnorm(x)
+
+
+# Plot x, y:
+
+plot(x, y, pch = 20, col = 8)
+
+# Plot the values as a line instead:
+
+plot(x, y, type="l", lwd = 4, col="tan4", 
+     xlim = c(-3, 3), ylim = c(-3, 3), 
+     main = "Testing \n Plots", sub ="First")
+
+# Now overlap the points (offset in this case):
+
+points(x, y + 0.2, pch = 19, cex = 0.2, col = "tan")
+
+# Overlap a line on the same plot:
+
+lines(x, z, col="blue")
+
+# Overlap a math function (no need to specify x coordinate):
+
+curve(sin, add = T, col = "tan3", lty = 3, lwd = 3)
+
+# Add STRAIGHT LINES:
+
+# Horizontal:
+abline(h = 0)
+
+# Vertical:
+abline(v = 0, lty = 2)
+
+# 1 is 45 degrees:
+
+abline(0, 1)
+
+# The first value is the intercept:
+
+abline(-2 ,1)
