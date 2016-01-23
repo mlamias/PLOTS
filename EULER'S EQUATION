@@ -1,0 +1,42 @@
+# Stops: Fractions of the circle: 2 pi / n
+
+# Euler's equation: e^i*x = cos (x) + i sin (x)
+
+f <- function(stops){counts <- 1:stops; exp(counts * 1i * (2*pi / stops))}
+
+stops = 20
+plot(f(stops), pch = 20, col='tan4', main = "Euler's Identity",
+     ylab = "Imaginary axis", xlab = "Real axis")
+
+stops =  1000
+plot(f(stops), pch = 19, col = 'tan4', cex = 0.3,
+     main = "Euler's Identity",
+     ylab = "Imaginary axis", xlab = "Real axis")
+
+
+fun <- function(stops){
+    counts <- 1:stops
+    (0.1 * counts) * exp(counts * 1i * (2*pi / stops))
+}
+
+plot(f(stops), pch = 19, col = 'tan4', cex = 0.1, 
+     xlim=c(-10,10), ylim=c(-10,10),
+     main = "Euler's Identity",
+     ylab = "Imaginary axis", xlab = "Real axis", type = 'n')
+
+for(i in seq(50, 100, 5)){
+    points(fun(i), pch = 20, col = i)
+    }
+
+fun <- function(stops){
+    counts <- 1:stops
+    (1 - (0.05 * stops)) * exp(counts * 1i * (2*pi / stops))
+}
+
+plot(f(stops), pch = 19, col = 'tan4', cex = 0.1,
+     main = "Euler's Identity",
+     ylab = "Imaginary axis", xlab = "Real axis", type = 'n')
+
+for(i in 20:40){
+    points(fun(i), pch = 19, cex = 0.5, col = i)
+}
