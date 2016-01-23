@@ -18,15 +18,16 @@ points2 = c(2.1+1.9i, 2.2+1.8i, 2.3+1.7i, 2.4+1.6i, 2.5+1.5i,
             2.2+0.1i,2.2+0.2i,2.2+0.3i,2.2+0.4i,2.2+0.5i,
             2.1+0.5i,2.0+0.5i)
 
-plot(points, xlim = c(-4.5,4.5), ylim = c(-4.5,4.5), pch = 19, col = 10,
+plot(points, xlim = c(-4.5,4.5), ylim = c(-4.5,4.5), pch = 19, 
+     col = "tan1",
      ylab="Imaginary axis", xlab="Real axis",
      main="Translating and scaling")
-points(points2, pch=19, col=4)
+points(points2, pch=19, col="tan3")
 abline(h=0, v=0)
 
 # Tranlating and scaling:
-points((1.4 + 1.5i) + c(points, points2), pch=19, col=5)
-points(2 * ((-3 + -1.5i) + c(points, points2)), pch=19, col=6)
+points((-4 + 2.5i) + c(points, points2), pch=19, col=5)
+points(2 * ((-2.8 + -1i) + c(points, points2)), pch=19, col=4)
 
 plot(points, xlim = c(-4.5,4.5), ylim = c(-4.5,4.5), pch = 19, col = 10,
      ylab="Imaginary axis", xlab="Real axis",
