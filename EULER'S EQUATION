@@ -1,22 +1,39 @@
-points = c(1.6+0.75i, 1.9+0.7i, 
-           2.2+0.75i, 
-           1.9+1.3i, 1.9+1.35i,1.9+1.40i, 1.85+1.3i, 1.95+1.3i,  #nose
-           1.15+1.7i, 1.3+1.80i, 1.45+1.85i, #eye 1
-           2.35+1.85i, 2.5+1.80i, 2.65+1.7i, #eye 2
-           1.4+1.6i, 2.4+1.6i) #eyeballs
+
+
+points = c(1+1i, 1.1+1.1i, 1.2+1.2i, 1.3+1.3i, 1.4+1.4i, 1.5+1.5i,
+           1.6+1.6i, 1.7+1.7i, 1.8+1.8i, 1.9+1.9i, 2+2i,
+           1.1+1i, 1.1+0.9i, 1.1+0.8i, 1.1+0.7i, 1.1+0.6i, 1.1+0.5i,
+           1.1+0.4i, 1.1+0.3i, 1.1+0.2i, 1.1+0.1i, 1.1+0i,
+           1.2+0i,1.3+0i,1.3+0i,1.4+0i,1.5+0i, 1.6+0i, 1.7+0i,
+           1.7+0.1i, 1.7+0.2i,1.7+0.31i,1.7+0.4i, 1.7+0.5i,
+           1.8+0.5i)
+
+points2 = c(2.1+1.9i, 2.2+1.8i, 2.3+1.7i, 2.4+1.6i, 2.5+1.5i,
+            2.6+1.4i, 2.7+1.3i, 2.8+1.2i, 2.9+1.1i, 3.0+1.0i,
+            2.9+1i,2.9+0.9i,2.9+0.8i,2.9+0.7i,2.9+0.6i,2.9+0.5i,
+            2.9+0.4i,2.9+0.3i,2.9+0.2i,2.9+0.1i,2.9+0i,
+            2.8+0i,2.7+0i,2.6+0i,2.5+0i,2.4+0i,2.3+0.0i,2.2+0.0i,
+            2.2+0.1i,2.2+0.2i,2.2+0.3i,2.2+0.4i,2.2+0.5i,
+            2.1+0.5i,2.0+0.5i)
+
 plot(points, xlim = c(-5,5), ylim = c(-5,5), pch = 19, col = 2)
+points(points2, pch=19, col=3)
 abline(h=0, v=0)
 # Inverting:
-points(-1 * points, pch = 19, col = 3)
+points(-1 * points, pch = 19, col = 4)
+points(-1 * points2, pch = 19, col = 5)
+
 # 90 degree rotation
-points(1i * points, pch = 19, col = 4)
+points(1i * points, pch = 19, col = 6)
+points(1i * points2, pch = 19, col = 7)
 
+combo <- c(points,points2)
+plot(combo, xlim = c(-5,5), ylim = c(-5,5), pch = 19, col = 2)
 
-plot(points, xlim = c(-5,5), ylim = c(-5,5), pch = 19, col = 2)
 abline(h=0, v=0)
 # Rotations:
 for (n in seq(20, 180, 40)){
-    rot_points <- 1.5 * exp(n * 1i * (2*pi / 200)) * points
+    rot_points <- 1.5 * exp(n * 1i * (2*pi / 200)) * combo
     points(rot_points, pch = 19)
 }
 
