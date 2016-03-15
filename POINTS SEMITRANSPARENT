@@ -9,12 +9,19 @@ plot(iris$Sepal.Length ~ iris$Sepal.Width, pch= 21,
      main="Irises",
      ylab ="Sepal Length",
      xlab ="Sepal Width")
-
+legend(
+    x ="topleft",
+    legend = paste("Color", levels(iris$Species)),
+    col = colors,
+    pch = 19, 
+    cex = .7
+)
 
 pairs(iris[,1:4], col=colors[as.numeric(iris$Species)], 
       pch=16, cex=0.3, main="Irises")
-      
-      
+
+
+
      #bg is the filling of the points
      #col is the border of the points
      #this only works for pch from 20 to 25.
