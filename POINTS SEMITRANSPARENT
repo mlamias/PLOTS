@@ -1,8 +1,20 @@
-pch=16, col=rgb(red=0.2, green=0.2, blue=1.0, alpha=0.2)
-     pch=21, cex = 0.5,
-     bg  = rgb(red=0, green=0, blue=1.0, alpha=0.1), 
-     col = rgb(red=0, green=0, blue=0, alpha=0)
-     
+colors = c(rgb(red=0.5, green=0, blue=1.0, alpha=1),
+           rgb(red=0.8, green=0, blue=0.8, alpha=0.4),
+           rgb(red=0.8, green=0, blue=.2, alpha=0.7))
+
+plot(iris$Sepal.Length ~ iris$Sepal.Width, pch= 21,
+     bg  = colors[as.numeric(iris$Species)],
+     cex = 0.7,
+     col = rgb(red=0, green=0, blue=0, alpha=0),
+     main="Irises",
+     ylab ="Sepal Length",
+     xlab ="Sepal Width")
+
+
+pairs(iris[,1:4], col=colors[as.numeric(iris$Species)], 
+      pch=16, cex=0.3, main="Irises")
+      
+      
      #bg is the filling of the points
      #col is the border of the points
      #this only works for pch from 20 to 25.
