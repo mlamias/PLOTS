@@ -1,3 +1,40 @@
+par(mfrow=c(1,2))
+
+x <- seq(-3,3,by=0.001)
+y <- dnorm(x)
+
+
+plot(x,y, type='l', lwd = 3, col = "gray50", xaxt = "n",
+     ylab="", main="Confidence Interval", xlab="CI")
+axis(1, at = c(round(qnorm(0.025),2),0, round(qnorm(0.975),2)))
+abline(h=0)
+
+xrun <- seq(qnorm(0.025),qnorm(0.975),0.01)
+yrun <- dnorm(xrun)
+polygon(c(qnorm(0.025),xrun,qnorm(0.975)), 
+        c(.0001,yrun,.00001), col = rgb(0,0,0.9,0.8), border = F)
+
+polygon(c(qnorm(0.025), seq(qnorm(0.025),qnorm(0.75),0.01), qnorm(0.975)), 
+        c(0.0001, dnorm(seq(qnorm(0.025),qnorm(0.75),0.01)), 0.0001),
+        density = 10, angle=45, border = F, col="white")
+lines(x, y, lwd = 3, col = "gray50")
+
+plot(x,y, type='l', lwd = 3, col = "gray50", xaxt = "n",
+     ylab="", xlab="Half-width Confidence Interval",
+     main="MARGIN OF ERROR")
+axis(1, at = c(0, round(qnorm(0.975),2)))
+
+xrun <- seq(0,qnorm(0.975),0.01)
+yrun <- dnorm(xrun)
+polygon(c(0,xrun,qnorm(0.975)), 
+        c(.0001,yrun,.00001), col = rgb(0,0,0.9,0.7), border = F)
+polygon(c(0,xrun,qnorm(0.975)), c(.00001,yrun,.00001), 
+        density = 10, angle=45, border = F, col="white")
+abline(h=0)
+lines(x, y, lwd = 3, col = "gray50")
+
+######################################################################
+
 x <- seq(-2.5,2.5,0.01)
 y <- dnorm(x)
 plot(x,y, type='l', lwd = 3, col = "gray50", xaxt = "n")
