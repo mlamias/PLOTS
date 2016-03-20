@@ -1,0 +1,4 @@
+install.packages("TeachingDemos")
+par(mfrow=c(1,2))
+dots(rpois(20,lambda = 2), pch=20, col=rgb(red=0, green=0, blue=0.8, alpha=0.6), main="Realizations from X ~ Pois(2)")
+dots(rpois(100,lambda = 2), pch=20, col=rgb(red=0, green=0, blue=0.8, alpha=0.6), main="Realizations X ~ Pois(2)")
