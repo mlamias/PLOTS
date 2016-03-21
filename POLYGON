@@ -1,3 +1,19 @@
+x <- seq(0, 4, 0.001)
+y <- dchisq(x, 1)
+plot(x, y, type ="l", lwd=3, ylim=c(0,0.5), xlim=c(0.5,3), col="blue4",
+     main = "Chi square pdf", 
+     xlab="X = x: 1 < x < 2")
+abline(h=0, col="gray")
+
+
+xrun <- seq(1, 2,length=101)
+yrun <- dchisq(xrun,df=1)
+polygon(c(xrun,rev(xrun)),c(yrun,rep(0,length(yrun))),
+        col=adjustcolor("olivedrab",alpha=0.8), border = F)
+lines(x, y, type ="l", lwd=3, ylim=c(0,2), col="navajowhite4")
+
+#################################################################################3
+
 par(mfrow=c(1,2))
 
 x <- seq(-3,3,by=0.001)
