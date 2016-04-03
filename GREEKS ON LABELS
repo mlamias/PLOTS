@@ -1,0 +1,22 @@
+p = seq(0,1,0.0001)
+trials= 10
+successes = 7
+density = dbinom(7, 10, prob=p)
+
+density = (factorial(trials)/(factorial(successes)*factorial(trials-successes))) * p^successes * (1 - p)^(trials-successes)
+plot(density ~ p, type="l", col = 4, lwd=3, ylim=c(0,1.5),
+     main = expression(paste("MLE of " , pi, " given 7 success in 10 trials")))
+density = 5 * (factorial(trials)/(factorial(successes)*factorial(trials-successes))) * p^successes * (1 - p)^(trials-successes)
+lines(density ~ p, col=2, lwd=3)
+abline(v=0.7)
+abline(h=0)
+legend(0.65,1.5,legend=expression(paste(l,(pi), " x 5")), border ="",bty = "n",
+       text.col=2)
+legend(0.65,0.45,legend=expression(paste(l,(pi))), border ="",bty = "n",
+       text.col=4)
+segments(0.6,dbinom(7,10,0.7)+0.01,0.8,dbinom(7,10,0.7)+0.01,
+         lwd=2, col=4)
+segments(0.6,5*dbinom(7,10,0.7)+0.001,0.8,5*dbinom(7,10,0.7)+0.001,
+         lwd=2, col=2)
+arrows(0.7,5*dbinom(7,10,0.7),0.7,0, col="purple", lwd=2)
+legend(0.65,0.2,legend="MLE",bty="n", text.col="purple",text.font = 2)
