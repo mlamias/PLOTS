@@ -1,3 +1,4 @@
-par(bg="gray90")
-colors=c("wheat1", "wheat3", "wheat4")
-boxplot(Recall ~ Emotion, data, col = colors, ylab="Recall Rate")
+colors=c("firebrick4","burlywood")
+boxplot(treated_ave, placebo_ave, col=colors, pch=20, cex=0.2,
+        outcol = 2,
+        main="Difference Treated v Placebo")
