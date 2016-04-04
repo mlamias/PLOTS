@@ -1,0 +1,11 @@
+plot(density(treated), col="firebrick4", lwd=2,
+     main = "Density treated v placebo", xlab = "Dyastolic BP",
+     xlim=c(40,140))
+
+abline(v=mean(treated_ave), col="firebrick4")
+lines(density(placebo), col="burlywood", lwd=2)
+abline(v=mean(placebo_ave), col="burlywood")
+legend(100,0.025,legend=c("Treated","Placebo"),
+       col=c("firebrick4","burlywood"),
+       lty=1,
+       border="", bty="n",cex=0.8)
