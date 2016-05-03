@@ -1,0 +1,80 @@
+par(mfrow=c(1,1))
+set.seed(5)
+x=rnorm(30)
+y=5*x + rnorm(30, 0, 5)
+plot(y ~ x, bg=2, pch=20, cex=1.2,ylim=c(-25,25),
+     main="Gaussian Distribution of Residuals across OLS in the Population
+", xlab="", ylab="")
+
+
+abline(lm(y~x), lwd=2, lty=2)
+
+
+x.pop=rnorm(1e4)
+y.pop= 5*x.pop + rnorm(1e4, 0, 5)
+points(y.pop ~ x.pop, pch=20, col=rgb(0,0,0.5,.03))
+abline(lm(y.pop ~ x.pop), lwd=4, col="darkblue")
+
+
+modl=lm(y.pop ~ x.pop)
+summary(modl)
+std=sd((lm(y.pop~x.pop)$residuals))
+
+c <- 7 
+df1 <- data.frame(yval = seq(from = -15 + 
+                            (modl$coef[1]+0.5*modl$coef[2]), 
+                             to = 15 + 
+                            (modl$coef[1]+0.5*modl$coef[2]), 
+                             by = 0.1), 
+  xval = (dnorm(seq(from = -15, to = 15, by = 0.1), 0, std)*c))
+with(df1, lines(xval+0.5, yval, 
+                lwd = 4, col="darkblue"))
+abline(v=0.5, col="darkblue", lwd=2)
+arrows(0.5,
+      modl$coef[1]+0.5*modl$coef[2],
+      0.5 + (dnorm(0,0,std)*c),
+      (modl$coef[1]+0.5*modl$coef[2]), 
+      lwd=2, col="yellow")
+
+
+
+c <- 7 
+df1 <- data.frame(yval = seq(from = -15 + 
+                               (modl$coef[1]-0.5*modl$coef[2]), 
+                             to = 15 + 
+                               (modl$coef[1]-0.5*modl$coef[2]), 
+                             by = 0.1), 
+          xval = (dnorm(seq(from = -15 + 
+                              (modl$coef[1]-0.5*modl$coef[2]),
+                            to = 15+ 
+                              (modl$coef[1]-0.5*modl$coef[2]), 
+                            by = 0.1), modl$coef[1]-0.5*modl$coef[2], 
+                        std)*c))
+with(df1, lines(xval-0.5, yval, lwd = 4, col="darkblue"))
+abline(v=-0.5, col="darkblue", lwd=2)
+arrows(-0.5,
+       modl$coef[1]-0.5*modl$coef[2],
+       -0.5 + (dnorm(0,0,std)*c),
+       (modl$coef[1]-0.5*modl$coef[2]), 
+       lwd=2, col="yellow")
+
+
+c <- 7 
+df1 <- data.frame(yval = seq(from = -15 + 
+                               (modl$coef[1]-1.5*modl$coef[2]), 
+                             to = 15 + 
+                               (modl$coef[1]-1.5*modl$coef[2]), 
+                             by = 0.1), 
+                  xval = (dnorm(seq(from = -15 + 
+                                      (modl$coef[1]-1.5*modl$coef[2]),
+                                    to = 15+ 
+                                      (modl$coef[1]-1.5*modl$coef[2]), 
+                                    by = 0.1), modl$coef[1]-1.5*modl$coef[2], 
+                                std)*c))
+with(df1, lines(xval-1.5, yval, lwd = 4, col="darkblue"))
+abline(v=-1.5, col="darkblue", lwd=2)
+arrows(-1.5,
+       modl$coef[1]-1.5*modl$coef[2],
+       -1.5 + (dnorm(0,0,std)*c),
+       (modl$coef[1]-1.5*modl$coef[2]), 
+       lwd=2, col="yellow")
