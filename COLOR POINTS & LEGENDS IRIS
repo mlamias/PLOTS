@@ -1,3 +1,8 @@
+# Color palette:
+
+palette(c("purple2","indianred1","orchid1"))
+plot(iris[,1:4], col=as.factor(iris[,5]), pch=19, cex=.9)
+
 # With plot:
 
 plot(Sepal.Length ~ Sepal.Width, main="Iris Data", pch=19, cex=0.5, 
