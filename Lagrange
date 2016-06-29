@@ -2,7 +2,7 @@
 z = x .* y;
 
 
-contourf(x,y,z,50) # Contour plot
+contourf(x,y,z,100) # Contour plot
 hold on
 line([0 3], [3 -1], 'LineWidth', 2);
 
