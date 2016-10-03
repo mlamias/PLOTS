@@ -1,3 +1,5 @@
+###FIRST MODEL:
+
 options(scipen=999) # To ease the interpretation of the output values.
 set.seed(2) # To reproduce exact results.
 n=84 # Number of observations
@@ -44,3 +46,23 @@ panel.smooth<-function (x, y, col = "blue", bg = "NA", pch = 20,
 pairs(~casualties+population+fam.income+gender, data=data,
       lower.panel=panel.smooth,upper.panel=panel.cor, 
       main="Casualties")
+
+
+=======================================================================================
+
+###SECOND MODEL:
+
+library(MASS)
+set.seed(100)
+
+m <- 3
+n <- 2000
+sigma <- matrix(c(1, 0.4, 0.2,
+                  0.4, 1, -0.8,
+                  0.2, -0.8, 1), 
+                nrow=3)
+z <- mvrnorm(n,mu=rep(0, m),Sigma=sigma,empirical=T)
+
+library(psych)
+cor(z,method='spearman')
+pairs.panels(z)
