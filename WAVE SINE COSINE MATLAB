@@ -1,0 +1,17 @@
+clear
+close all
+clc
+
+f = @(x,y) .3 + sin(-.5*x + 0.5*y)
+stepsize = .1;
+[X,Y] = meshgrid(0:stepsize:20);
+Z = f(X, Y);
+
+colormap(jet)
+%colormap(gray)
+surf(X,Y,Z, 'LineStyle','none')
+title('sin(-0.5 x + 0.2 y)')
+xlabel('x')
+ylabel('y')
+zlabel('z')
+set(h, 'Linestile','.');
