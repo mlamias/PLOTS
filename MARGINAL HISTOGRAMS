@@ -1,0 +1,46 @@
+# Used here: http://stats.stackexchange.com/questions/149522/using-uniform-distribution-to-generate-correlated-random-samples-in-r
+# Nice uniform histo barplots around datacloud
+
+# From here: https://www.r-bloggers.com/example-8-41-scatterplot-with-marginal-histograms/
+
+scatterhist = function(x, y, xlab="", ylab="",title=""){
+  zones=matrix(c(2,0,1,3), ncol=2, byrow=TRUE)
+  layout(zones, widths=c(4/5,1/5), heights=c(1/5,4/5))
+  xhist = hist(x, plot=FALSE)
+  yhist = hist(y, plot=FALSE)
+  top = max(c(xhist$counts, yhist$counts))
+  
+  par(mar=c(3,1.5,1.5,1)) 
+  plot(x, y, col = rgb(0,0,1,.1), xlab ="", ylab = "")
+
+  
+  abline(lm(y ~ x), lwd = 2, lty = 2, col='gray80')
+  
+  
+  par(mar=c(0,0,2.5,0))
+  barplot(xhist$counts, axes=FALSE, ylim=c(0, top), space=0,
+          border = F)
+  
+  par(mar=c(1,0,1,1.4))
+  barplot(yhist$counts, axes=FALSE, xlim=c(0, top), space=0, 
+          horiz=TRUE, border = F)
+  
+  par(oma=c(3,3,0,0))
+  
+  mtext(xlab, side=1, line=1, outer=TRUE, adj=0, 
+        at=.8 * (mean(x) - min(x))/(max(x)-min(x)))
+  mtext(ylab, side=2, line=1, outer=TRUE, adj=0, 
+        at=(.8 * (mean(y) - min(y))/(max(y) - min(y))))
+
+}
+
+
+
+(C <- matrix(c(1,0.7,0.7,1), nrow = 2))
+require(mvtnorm)
+SN <- rmvnorm(mean = c(0,0), sig = C, n = 1e5)
+X1 <- SN[,1]; X2 <- SN[,2]              
+U <- pnorm(SN)
+U1 <- U[,1]; U2 <- U[,2]
+scatterhist(U1, U2, xlab="U1", ylab ="U2", 
+            title="Probability Integral Transform")
