@@ -10,19 +10,22 @@ scatterhist = function(x, y, xlab="", ylab="",title=""){
   yhist = hist(y, plot=FALSE)
   top = max(c(xhist$counts, yhist$counts))
   
-  par(mar=c(3,1.5,1.5,1)) 
+  par(mar=c(2.5,1.5,.5,1)) 
   plot(x, y, col = rgb(0,0,1,.1), xlab ="", ylab = "")
 
   
-  abline(lm(y ~ x), lwd = 2, lty = 2, col='gray80')
+  abline(lm(y ~ x), lwd = 2, lty = 2, col='gray90')
   
   
-  par(mar=c(0,0,2.5,0))
-  barplot(xhist$counts, axes=FALSE, ylim=c(0, top), space=0,
-          border = F)
+  par(mar=c(0,0.3,3.9,0.1))
+  barplot(xhist$counts, axes=FALSE, ylim=c(0, top), 
+          space=0,
+          border = F,
+          main = title)
   
-  par(mar=c(1,0,1,1.4))
-  barplot(yhist$counts, axes=FALSE, xlim=c(0, top), space=0, 
+  par(mar=c(1.4,0,0.1,2))
+  barplot(yhist$counts, axes=FALSE, xlim=c(0, top), 
+          space=0, 
           horiz=TRUE, border = F)
   
   par(oma=c(3,3,0,0))
