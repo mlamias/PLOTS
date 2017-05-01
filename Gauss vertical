@@ -1,5 +1,98 @@
 # For this post: https://stats.stackexchange.com/a/276888/67822
 
+# Homoskedastic normal distribution of residuals:
+
+par(mfrow=c(1,1))
+set.seed(5)
+x=runif(30,-2,2)
+y= 5 * x + rnorm(30, 0, 5)
+plot(y ~ x, bg=2, cex=1.2,ylim=c(-25,25),
+     main="Gaussian Distribution of Residuals in the Population
+     ", col ="gray25", pch=19,
+     xlab="", ylab="")
+
+
+abline(lm(y~x), lwd=2, lty=2, col= "gray25")
+
+n = 1 * 1e5
+x.pop=runif(n, -2,2)
+y.pop= 5 * x.pop + rnorm(n, 0, 5)
+points(y.pop ~ x.pop, pch=20, 
+       col=rgb(0,0,0.5,.03))
+abline(lm(y.pop ~ x.pop), lwd=4, col="darkblue")
+
+
+modl=lm(y.pop ~ x.pop)
+summary(modl)
+std=sd((lm(y.pop~x.pop)$residuals))
+
+c = 7 
+df1 <- data.frame(yval = seq(
+  from = -15 + (modl$coef[1]+1*modl$coef[2]), 
+  to = 15 + (modl$coef[1]+1*modl$coef[2]), 
+                             by = 0.1), 
+  xval = (dnorm(seq(from = -15, to = 15, by = 0.1), 0, std)*c))
+
+with(df1, lines(xval+1, yval, 
+                lwd = 3, col="red"))
+
+abline(v = 1, col="darkred", lwd = 3, lty = 3)
+arrows(1,
+       modl$coef[1]+ 1 * modl$coef[2],
+       1 + (dnorm(0,0,std)*c) - 0.03,
+       (modl$coef[1] + 1 * modl$coef[2]), 
+       lwd = 3, col="white", 
+       angle = 15, length = .18)
+with(df1, lines(xval+1, yval, 
+                lwd = 3, col="red"))
+
+
+c = 7 
+df1 <- data.frame(yval = seq(
+  from = -15 + (modl$coef[1]+0*modl$coef[2]), 
+  to = 15 + (modl$coef[1]+0*modl$coef[2]), 
+                             by = 0.1), 
+      xval = (dnorm(seq(from = -15 + 
+             (modl$coef[1]+0*modl$coef[2]),
+              to = 15+ 
+              (modl$coef[1]+0*modl$coef[2]), 
+      by = 0.1), modl$coef[1]+0*modl$coef[2], 
+                                std) * c))
+
+with(df1, lines(xval, yval, lwd = 3, col="red"))
+abline(v=0, col="darkred", lwd=3, lty = 3)
+arrows(0,
+       modl$coef[1]+0*modl$coef[2],
+       0 + (dnorm(0,0,std)*c) - 0.03,
+       (modl$coef[1] + 0*modl$coef[2]), 
+       lwd=3, col="white", 
+       angle = 15, length = .18)
+
+
+c = 7 
+df1 <- data.frame(yval = seq(from = -15 + 
+        (modl$coef[1]-1*modl$coef[2]), 
+        to = 15 + 
+        (modl$coef[1]-1*modl$coef[2]), 
+                             by = 0.1), 
+        xval = (dnorm(seq(from = -15 + 
+            (modl$coef[1]-1*modl$coef[2]),
+            to = 15+ 
+            (modl$coef[1]-1*modl$coef[2]), 
+          by = 0.1), modl$coef[1]-1*modl$coef[2], 
+                                std) * c))
+with(df1, lines(xval-1, yval, lwd = 3, 
+                col="red"))
+abline(v=-1, col="darkred", lwd=3, lty=3)
+arrows(-1,
+       modl$coef[1]-1*modl$coef[2],
+       -1 + (dnorm(0,0,std)*c) - 0.03,
+       (modl$coef[1] - 1 * modl$coef[2]), 
+       lwd=2, col="white", angle = 15, 
+       length = .18)
+
+
+
 # Heteroskedastic residuals:
 
 par(mfrow=c(1,1))
@@ -37,7 +130,7 @@ df1 = data.frame(
              to   =  5 + (modl$coef[1] + 0.5 * modl$coef[2]),  
              by = 0.1), 
   xval = (dnorm(seq(from = -5, to = 5, by = 0.1), 
-                0, std/2) * c))
+                0, std/1.5) * c))
 with(df1, lines(xval + .5, yval, lwd = 3, 
                 col="red"))
 
@@ -47,14 +140,14 @@ abline(v = 0.5, col="darkred", lwd=3)
 
 arrows(0.5,
        modl$coef[1]+0.5*modl$coef[2],
-       0.5 + (dnorm(0,0,std/2)*c) - 0.01,
+       0.5 + (dnorm(0,0,std/1.5)*c) - 0.01,
        (modl$coef[1]+0.5*modl$coef[2]), 
        lwd=3, col="white", angle = 15, 
        length = .15)
 
 
 
-c = .8
+c = .5
 df1 <- data.frame(
   yval = seq(from = -5 + 
           (modl$coef[1] + 0.8 * modl$coef[2]), 
@@ -62,28 +155,28 @@ df1 <- data.frame(
                       0.8 * modl$coef[2]), 
              by = 0.1), 
   xval = (dnorm(seq(from = -5, to = 5, by = 0.1), 
-                0, std / 1.5) * c))
+                0, std) * c))
 with(df1, lines(xval + .8, yval, lwd = 3, 
                 col="red"))
 
-abline(v=0.8, col="darkred", lwd=3)
+abline(v=0.801, col="darkred", lwd=3)
 
 arrows(0.8,
        modl$coef[1] + 0.8 * modl$coef[2],
-       0.8 + (dnorm(0,0, std/1.5) * c) - 0.009,
+       0.8 + (dnorm(0,0, std) * c) - 0.009,
        (modl$coef[1] + 0.8 * modl$coef[2]), 
        lwd=3, col="white", angle = 15, 
        length = .15)
 
 
 
-c = 1.3
+c = .5
 df1 <- data.frame(
   yval = seq(from = -10 + (modl$coef[1] + 1.1 * modl$coef[2]), 
              to =   10 + (modl$coef[1] + 1.1 * modl$coef[2]), 
              by = 0.1), 
   xval = (dnorm(seq(from = -10, to = 10, by = 0.1), 
-                0, std/1.2) * c))
+                0, std * 1.2) * c))
 with(df1, lines(xval + 1.1, yval, lwd = 3, 
                 col="red"))
 
@@ -91,7 +184,7 @@ abline(v=1.1, col="darkred", lwd=3)
 
 arrows(1.1,
        modl$coef[1] + 1.1 * modl$coef[2],
-       1.1 + (dnorm(0,0, std/1.2) * c) - 0.009,
+       1.1 + (dnorm(0,0, std * 1.2) * c) - 0.009,
        (modl$coef[1] + 1.1 * modl$coef[2]), 
        lwd=3, col="white", angle = 15, 
        length = .15)
