@@ -310,3 +310,116 @@ par(mfrow = c(1,2))
 plot(modl, which =c(1,2), pch=21, cex=.1, 
      col=rgb(.5,0,0.5,.6))
 par(mfrow = c(1,1))
+
+
+library(fGarch)
+set.seed(5)
+x = runif(30, 0, pi/2)
+xi = 50
+y = 5 * x + 
+  rsnorm(30, mean = 0, sd = 4, xi = xi) +
+  rnorm(30, 0, 2)
+
+par(mar=c(2,2,2.5,2))
+plot(y ~ x, type="n",bg = 2, pch = 19, 
+     cex=.5, cex.axis =.5,
+     xlim=c(0.2, pi/2 - 0.1),
+     ylim=c(-15,30), 
+     col ="gray25", cex.main=.9,
+     main="Homoskedastic & Non-Gaussian Errors", 
+     xlab="", ylab="")
+
+points(y ~ x, bg = 2, pch = 19, col ="gray25", cex=1.5)
+
+abline(lm(y~x), lwd=2, lty=2, col= "gray55")
+
+n = 7 * 1e4
+x.pop = seq(0, pi/2, length.out = n)
+y.pop= 5 * x.pop + 
+  rsnorm(n, mean = 0, sd = 4, xi = xi) +
+  rnorm(x.pop, 0, 2)
+
+points(y.pop ~ x.pop, pch=20, 
+       col=rgb(0,0,0.5,.03))
+
+
+abline(lm(y.pop ~ x.pop), lwd=4, col="darkblue")
+
+
+modl=lm(y.pop ~ x.pop)
+summary(modl)
+
+
+std=sd((lm(y.pop~x.pop)$residuals))
+
+c = 1.1 
+df1 = data.frame(
+  yval = seq(from = -10 + (modl$coef[1] + 0.5 * modl$coef[2]), 
+             to   =  20 + (modl$coef[1] + 0.5 * modl$coef[2]),  
+             by = 0.1), 
+  xval = (dsnorm(seq(from = -10, to = 20, by = 0.1), 
+                 0, std, 2) * c))
+with(df1, lines(xval + .5, yval, lwd = 3, 
+                col="red"))
+
+abline(v = 0.5, col="darkred", lwd=3)
+
+
+
+arrows(0.5,
+       modl$coef[1]+0.5*modl$coef[2],
+       0.5 + (dsnorm(0,0,std, xi)*c) - 0.01,
+       (modl$coef[1]+0.5*modl$coef[2]), 
+       lwd=3, col="white", angle = 15, 
+       length = .15)
+
+abline(v = 0.5, col="darkred", lwd=3)
+
+c = 1.2
+df1 <- data.frame(
+  yval = seq(from = -10 + 
+               (modl$coef[1] + 0.8 * modl$coef[2]), 
+             to =   20 + (modl$coef[1] + 
+                            0.8 * modl$coef[2]), 
+             by = 0.1), 
+  xval = (dsnorm(seq(from = -10, to = 20, by = 0.1), 
+                 0, std, 2) * c))
+with(df1, lines(xval + .8, yval, lwd = 3, 
+                col="red"))
+
+abline(v=0.8, col="darkred", lwd=3)
+
+arrows(0.805,
+       modl$coef[1] + 0.8 * modl$coef[2],
+       0.8 + (dsnorm(0,0, std, 2) * c) - 0.009,
+       (modl$coef[1] + 0.8 * modl$coef[2]), 
+       lwd=3, col="white", angle = 15, 
+       length = .15)
+
+abline(v=0.8, col="darkred", lwd=3)
+
+c = 1.1
+df1 <- data.frame(
+  yval = seq(from = -10 + (modl$coef[1] + 1.1 * modl$coef[2]), 
+             to =   15 + (modl$coef[1] + 1.1 * modl$coef[2]), 
+             by = 0.1), 
+  xval = (dsnorm(seq(from = -10, to = 20, by = 0.1), 
+                 0, std, 2) * c))
+with(df1, lines(xval + 1.1, yval, lwd = 3, 
+                col="red"))
+
+abline(v=1.1, col="darkred", lwd=3)
+
+arrows(1.1,
+       modl$coef[1] + 1.1 * modl$coef[2],
+       1.1 + (dsnorm(0,0, std, 2) * c) - 0.009,
+       (modl$coef[1] + 1.1 * modl$coef[2]), 
+       lwd=3, col="white", angle = 15, 
+       length = .15)
+
+abline(v=1.1, col="darkred", lwd=3)
+
+par(mfrow = c(1,2))
+plot(modl, which =c(1,2), pch=21, cex=.1, 
+     col=rgb(.5,0,0.5,.6))
+par(mfrow = c(1,1))
