@@ -1,5 +1,6 @@
 # For this post: https://stats.stackexchange.com/a/276888/67822
 
+
 # Homoskedastic normal distribution of residuals:
 
 par(mfrow=c(1,1))
@@ -214,7 +215,7 @@ set.seed(5)
 x = runif(30, 0, pi/2)
 xi = 100
 y = 5 * x + rsnorm(30, mean = 0, sd = x, xi = xi)
-
+par(mfrow=c(1,1))
 par(mar=c(2,2,2.5,2))
 plot(y ~ x, type="n",bg = 2, pch = 19, 
      cex=1, cex.axis =.5,
@@ -227,7 +228,7 @@ points(y ~ x, bg = 2, pch = 19, col ="yellow", cex=1)
 
 abline(lm(y~x), lwd=2, lty=2, col= "yellow")
 
-n = 7 * 1e4
+n = 1 * 1e5
 x.pop = seq(0, pi/2, length.out = n)
 var = abs(sin(x.pop))
 y.pop= 5 * x.pop + 
@@ -333,16 +334,16 @@ par(mar=c(2,2,2.5,2))
 plot(y ~ x, type="n",bg = 2, pch = 19, 
      cex=1, cex.axis =.5,
      xlim=c(0.2, pi/2 - 0.1),
-     ylim=c(-15,25), 
+     ylim=c(-10,25), 
      col ="yellow", cex.main=.9,
-     main="Homoskedastic Non-Gaussian Errors", 
+     main="Homoskedastic Non-Gaussian", 
      xlab="", ylab="")
 
 points(y ~ x, bg = 2, pch = 19, col ="yellow", cex=1)
 
 abline(lm(y~x), lwd=2, lty=2, col= "yellow")
 
-n = 7 * 1e4
+n = 1 * 1e5
 x.pop = seq(0, pi/2, length.out = n)
 y.pop= 5 * x.pop + 
   rsnorm(n, mean = 0, sd = 4, xi = xi) +
