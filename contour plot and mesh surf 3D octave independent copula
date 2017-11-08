@@ -1,0 +1,17 @@
+[x,y] = meshgrid(0:0.02:1, 0:0.02:1);
+z = x .* y;
+
+colormap hsv;
+contourf(x,y,z,50); # Contour plot
+title ("Independent copula");
+xlabel ("u");
+ylabel ("v");
+hold on
+
+
+figure
+colormap hsv;
+surf(x,y,z)
+title ("Independent copula");
+xlabel ("u");
+ylabel ("v");
