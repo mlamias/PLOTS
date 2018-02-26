@@ -1,0 +1,23 @@
+
+# Source: https://www.r-bloggers.com/complex-domain-coloring/
+require(ggplot2)
+f = function(x) z^8-2*x^7+2*x^6-4*x^5+2*x^4-2*x^3-5*x^2+4*x-4
+
+z = as.vector(outer(seq(-5, 5, by =.03), 1i * seq(-5, 5, by =.03),'+')) # Creating domain of complex numbers
+
+z=data.frame(x = Re(z),
+             y = Im(z),
+             h = (Arg(f(z)) < 0) * 1 + Arg(f(z)) / (2 * pi), 
+             # Angles, which are output from 0 to 2 pi + and - are turned + with a Boolean that adds 1 to the fraction of 2pi if -.
+             # This determines the hue or color.
+             s = (1 + sin(log(1 + Mod(f(z)))/(2 * pi)))/2,
+             # The saturation comes from the sin of the module of the image. 
+             v = (1 + cos(log(1 + Mod(f(z)))/(2 * pi)))/2)
+z=z[is.finite(apply(z,1,sum)),]
+opt=theme(legend.position="none",
+          panel.background = element_blank(),
+          panel.grid = element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          axis.text =element_blank())
+ggplot(data=z, aes(x=x, y=y)) + geom_tile(fill=hsv(z$h,z$s,z$v)) + opt
