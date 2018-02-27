@@ -64,16 +64,17 @@ def plot_domain(color_func, f,   re=[-1,1], im= [-1,1], Title='',
         plt.imshow(domc, origin="lower")
         plt.axis('off')
         
-plt.rcParams['figure.figsize'] = 10, 10
+# EXAMPLE 1:
+        
+plt.rcParams['figure.figsize'] = 7, 7
 ab=[-2,2]
 cd=[-2,2]
-plt.plot
-f=lambda z: z
-plot_domain(domaincol_c, f, re=ab, im= cd, Title='$f(z)=z$', daxis=True)       
 
-plt.rcParams['figure.figsize'] = 10, 10
-ab=[-2,2]
-cd=[-2,2]
-plt.plot
+f=lambda z: (z**2+1)
+plot_domain(domaincol_c, f, re=ab, im= cd, Title='$z^2 + 1$', daxis=True)
+
+
+# EXAMPLE 2:
+
 f=lambda z: (z**2 - 1) * (z - 1 - 1j)**2 / (z**2 + 2 + 2j)
 plot_domain(domaincol_c, f, re=ab, im= cd, Title='$f(z)=(z^2 - 1)(z - 1 - i)^2 /(z^2 + 2 + 2i)$', daxis=True)
