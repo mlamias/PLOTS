@@ -1,0 +1,17 @@
+r = (0:0.025:1)';                        
+theta = pi*(-1:0.05:1);
+z = r*exp(1i*theta);
+w = z.^(1/2);
+q = -z.^(1/2);                                 
+
+
+[x,y] = meshgrid(0:0.02:1, 0:0.02:1);
+
+figure
+colormap hsv;
+surf(real(z),imag(z),real(w),imag(w),'EdgeColor','none'); 
+hold on
+surf(real(z),imag(z),real(q),imag(q),'EdgeColor','none'); hold
+xlabel('Real(z)')
+ylabel('Imag(z)')
+zlabel('Real(w)')
