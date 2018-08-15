@@ -1,0 +1,16 @@
+from numpy import *
+from matplotlib.pyplot import *
+
+
+n, p = 10, .5
+draws = random.binomial(n, p, 10**6)
+binom.cdf(5, 10, p)
+print(mean(draws <= 5))
+print(binom.cdf(5,10,p))
+hist(draws,color='#0504aa',alpha=0.3, rwidth=.8)
+grid(axis='y', alpha=0.75)
+xlabel('Number of heads')
+ylabel('Number of experiments')
+title('Binomial (5, .5)')
+range(0,10)
+show()
