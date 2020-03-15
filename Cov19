@@ -30,7 +30,7 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
         log='y',
         col=5,
         axes=FALSE,
-        main = "Log-lin Cov-19 in Italy (red) v Spain (blue)",
+        main = "Log-lin Cov-19 in Italy (cyan) v Spain (blue)",
         cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
@@ -50,7 +50,7 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
      col=5,
      cex.axis=0.7,
      las=2,
-     main = "Log-lin Cov-19 in Italy (red) v Spain (blue)",
+     main = "Log-lin Cov-19 in Italy (cyan) v Spain (blue)",
      cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
