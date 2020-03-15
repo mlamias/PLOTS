@@ -29,7 +29,7 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
         log='y',
         col=5,
         axes=FALSE,
-        main = "Log-lin COVID-19 in Italy and Spain v South Korea",
+        main = "Log-lin cumulative COVID-19 cases in Italy and Spain v South Korea",
         cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
@@ -56,7 +56,7 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
      col=5,
      cex.axis=0.7,
      las=2,
-     main = "COVID-19 in Italy & Spain v South Korea",
+     main = "COVID-19 cumulative cases in Italy & Spain v South Korea",
      cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
