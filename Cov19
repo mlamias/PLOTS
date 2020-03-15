@@ -14,13 +14,12 @@ corona = (read_csv(x)
 )
 
 cc <- (corona
-       %>% filter(country %in% c("Italy","Spain"))
+       %>% filter(country %in% c("Italy","Spain", "Korea, South"))
 )
 
 ccw <- (cc
         %>% pivot_wider(names_from="country",values_from="cases")
-        ## select only since beginning of Italy/Spain epidemics
-        %>% filter(cumsum(Italy>0 | Spain>0)>=2)
+        %>% filter(cumsum(Italy>0 | Spain>0)>=5)
 )
 
 
@@ -30,18 +29,25 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
         log='y',
         col=5,
         axes=FALSE,
-        main = "Log-lin Cov-19 in Italy (cyan) v Spain (blue)",
+        main = "Log-lin COVID-19 in Italy and Spain v South Korea",
         cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 
-at2 <- 2^seq(1,25,by=1)
+at2 <- 2^seq(1,30,by=1)
 axis(side=2, at2, cex.axis=0.7)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
-lines(ccw$date, ccw$Spain, lwd=3, col=4)
+
+lines(ccw$date, ccw$`Korea, South`, lwd=3, col=4)
+lines(ccw$date, ccw$Spain, lwd=3, col=2)
+
+legend(ccw$date[1], 15000, legend=c("Korea", "Italy", "Spain"),
+       col=c(4, 5, 2), lty=1, lwd=3, cex=0.8,
+       box.lty=0)
+
 
 plot(ccw$date, ccw$Italy, type="l", lwd=3,
      ylab='', 
@@ -50,10 +56,15 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
      col=5,
      cex.axis=0.7,
      las=2,
-     main = "Cov-19 in Italy (cyan) v Spain (blue)",
+     main = "COVID-19 in Italy & Spain v South Korea",
      cex.main=0.9)
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 lines(ccw$date, ccw$Spain, lwd=3, col=4)
+lines(ccw$date, ccw$`Korea, South`, lwd=3, col=2)
+
+legend(ccw$date[1], 15000, legend=c("Korea", "Italy", "Spain"),
+       col=c(4, 5, 2), lty=1, lwd=3, cex=0.8,
+       box.lty=0)
