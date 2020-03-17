@@ -34,6 +34,7 @@ abline(v=seq(1,length(df$state),1), lty=2, col="grey90")
 
 NJ <- cc[cc$state=='New Jersey',]
 NJ <- NJ[NJ$cases>0,]
+altern_date <- format(as.Date(NJ$date), "%d/%m/%Y")
 
 plot(NJ$date, NJ$cases, type="l", lwd=3,
      ylab='', 
@@ -41,19 +42,19 @@ plot(NJ$date, NJ$cases, type="l", lwd=3,
      log='y',
      col=5,
      axes=FALSE,
-     main = "Log-lin cumulative COVID-19 cases in NJ",
+     main = paste("Log-lin cumulative COVID-19 cases in NJ as of",
+                  max(altern_date)),
      cex.main=0.9)
 
 at1 <- seq(min(NJ$date), max(NJ$date)+1, by=1);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 
-at2 <- 2^seq(1,30,by=1)
+at2 <- 2^seq(1,25,by=1)
 axis(side=2, at2, cex.axis=0.7)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
 abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
-
 
 plot(NJ$date, NJ$cases, type="l", lwd=3,
      ylab='', 
@@ -70,4 +71,6 @@ axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 at2 <- seq(0, max(NJ$cases)+50,25)
 axis(side=2, at2, cex.axis=0.7, las=1)
+
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+
