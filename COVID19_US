@@ -23,8 +23,6 @@ us <- aggregate(cc[ ,3], FUN="sum", by=list(as.Date(cc$date)))
 cc[,2:3] <- us 
 cc <- cc[1:nrow(us),]
 
-china <- corona[corona$country=='China',]
-
 ccw <- (cc
         %>% pivot_wider(names_from="country",values_from="cases")
         %>% filter(US>1)
@@ -63,10 +61,3 @@ plot(ccw$date, ccw$US, type="l", lwd=3,
 
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=1);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
-
-
-provinces <- c('Hubei', 'Guangdong', 'Henan', 'Zhejiang', 'Hunan', 'Anhui',
-               'Jiangxi','Shandong','Jiangsu','Sichuan','Heilongjiang','Hebei',
-               'Fujian','Guangxi','Shaanxi','Yunnan','Hainan','Guizhou','Shanxi',
-               'Gansu','Hong Kong','Liaoning','Jilin','Xinjiang','Inner Mongolia',
-               'Ningxia','Qinghai','Macau','Tibet')
