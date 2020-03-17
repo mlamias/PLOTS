@@ -18,6 +18,7 @@ corona = (read_csv(x)
 )
 
 cc <- corona[is.element(corona$state,state.name),]
+altern_date <- format(as.Date(cc$date), "%m/%d/%Y")
 
 counts <- vector(mode="numeric")
 
@@ -29,21 +30,22 @@ df <- data.frame(state.name,counts)
 colnames(df) <- c("state","counts")
 
 plot(df$state, df$counts, las=2, cex.axis=0.8, cex.main=0.8, 
-     ylim=c(0,max(df$counts)+500), main="Cummulative COVID-19 cases per state")
+     ylim=c(0,max(df$counts)+500), 
+     main=paste("Cummulative COVID-19 cases per state as of",
+                      last(altern_date)))
 abline(v=seq(1,length(df$state),1), lty=2, col="grey90")
 
 NJ <- cc[cc$state=='New Jersey',]
 NJ <- NJ[NJ$cases>0,]
-altern_date <- format(as.Date(NJ$date), "%d/%m/%Y")
+
 
 plot(NJ$date, NJ$cases, type="l", lwd=3,
      ylab='', 
      xlab='',
      log='y',
-     col=5,
+     col=4,
      axes=FALSE,
-     main = paste("Log-lin cumulative COVID-19 cases in NJ as of",
-                  max(altern_date)),
+     main = "Log-lin cumulative COVID-19 cases in NJ v PA",
      cex.main=0.9)
 
 at1 <- seq(min(NJ$date), max(NJ$date)+1, by=1);
@@ -56,11 +58,21 @@ axis(side=2, at2, cex.axis=0.7)
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
 abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
 
+PA <- cc[cc$state=='Pennsylvania',]
+PA <- PA[PA$cases>0,]
+
+lines(PA$date, PA$cases,lwd=3, col=3)
+
+legend(NJ$date[1], 130, legend=c("NJ", "PA"),
+       col=c(4, 3), lty=c(1,1), lwd=3, cex=0.8,
+       box.lty=0)
+
+
 plot(NJ$date, NJ$cases, type="l", lwd=3,
      ylab='', 
      xlab='',
      xaxt="n", yaxt="n",
-     col=5,
+     col=4,
      cex.axis=0.7,
      las=2,
      main = "COVID-19 cumulative cases in NJ",
@@ -74,3 +86,47 @@ axis(side=2, at2, cex.axis=0.7, las=1)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
 
+lines(PA$date, PA$cases,lwd=3, col=3)
+
+legend(NJ$date[1], 130, legend=c("NJ", "PA"),
+       col=c(4, 3), lty=c(1,1), lwd=3, cex=0.8,
+       box.lty=0)
+
+
+
+plot(PA$date, PA$cases, type="l", lwd=3,
+     ylab='', 
+     xlab='',
+     log='y',
+     col=5,
+     axes=FALSE,
+     main = "Log-lin cumulative COVID-19 cases in PA",
+     cex.main=0.9)
+
+at1 <- seq(min(PA$date), max(PA$date)+1, by=1);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+
+
+at2 <- 2^seq(1,25,by=1)
+axis(side=2, at2, cex.axis=0.7)
+
+abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
+
+plot(PA$date, PA$cases, type="l", lwd=3,
+     ylab='', 
+     xlab='',
+     xaxt="n", yaxt="n",
+     col=5,
+     cex.axis=0.7,
+     las=2,
+     main = "COVID-19 cumulative cases in PA",
+     cex.main=0.9)
+
+at1 <- seq(min(NJ$date), max(NJ$date)+1, by=1);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+
+at2 <- seq(0, max(PA$cases)+50,25)
+axis(side=2, at2, cex.axis=0.7, las=1)
+
+abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
