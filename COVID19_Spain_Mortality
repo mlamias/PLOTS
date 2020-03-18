@@ -1,0 +1,74 @@
+require(RCurl)
+require(foreign)
+require(tidyverse) # To tip the df from long row of dates to cols (pivot_longer())
+x = getURL("https://raw.githubusercontent.com/RInterested/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv")
+
+corona = (read_csv(x)
+          %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
+                           names_to = "date",
+                           values_to = "cases")
+          %>% select(`Country/Region`, date, cases)
+          %>% mutate(date=as.Date(date,format="%m/%d/%y"))
+          %>% drop_na(cases)
+          %>% rename(country="Country/Region")
+)
+
+cc <- (corona
+       %>% filter(country %in% c("Spain", "Italy"))
+)
+
+ccw <- (cc
+        %>% pivot_wider(names_from="country",values_from="cases")
+        %>% filter(Italy>1 & Spain>1)
+)
+
+
+plot(ccw$date, ccw$Italy, type="l", lwd=3, lty=3,
+        ylab='', 
+        xlab='',
+        log='y',
+        col=4,
+        axes=FALSE,
+        main = "Log-lin COVID-19 deaths in Spain v Italy",
+        cex.main=0.9)
+
+at1 <- seq(min(ccw$date), max(ccw$date)+3, by=1);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+
+
+at2 <- 2^seq(1,30,by=1)
+
+axis(side=2, at2, cex.axis=0.7)
+
+abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+
+lines(ccw$date, ccw$Spain, lwd=3, col=2)
+
+legend(ccw$date[1], 1000, legend=c("Italy", "Spain"),
+       col=c(4, 2), lty=c(3,1), lwd=3, cex=0.8,
+       box.lty=0)
+
+
+plot(ccw$date, ccw$Italy, type="l", lwd=3, lty=3,
+     ylab='', 
+     xlab='',
+     xaxt="n",
+     col=4,
+     cex.axis=0.7,
+     las=2,
+     main = "COVID-19 cumulative mortality in Italy & Spain",
+     cex.main=0.9)
+
+at1 <- seq(min(ccw$date), max(ccw$date)+3, by=1);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+
+lines(ccw$date, ccw$Spain, lwd=3, col=2)
+lines(ccw$date, ccw$`Korea, South`, lwd=3, lty=3, col=4)
+
+abline(h=seq(100,10000,100), lty=2, col="grey90")  # Add faint grid lines
+at1 <- seq(min(ccw$date), max(ccw$date)+1, by=1);
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
+
+legend(ccw$date[1], 1200, legend=c("Italy", "Spain"),
+       col=c(4, 2), lty=c(3,1), lwd=3, cex=0.8,
+       box.lty=0)
