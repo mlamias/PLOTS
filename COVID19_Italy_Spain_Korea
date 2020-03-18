@@ -32,14 +32,14 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
         main = "Log-lin cumulative COVID-19 cases in Italy and Spain v South Korea",
         cex.main=0.9)
 
-at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
+at1 <- seq(min(ccw$date), max(ccw$date)+1, by=2);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
-
 
 at2 <- 2^seq(1,30,by=1)
 axis(side=2, at2, cex.axis=0.7)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
 
 lines(ccw$date, ccw$`Korea, South`, lwd=3, col=4, lty=3)
 lines(ccw$date, ccw$Spain, lwd=3, col=2)
@@ -59,7 +59,7 @@ plot(ccw$date, ccw$Italy, type="l", lwd=3,
      main = "COVID-19 cumulative cases in Italy & Spain v South Korea",
      cex.main=0.9)
 
-at1 <- seq(min(ccw$date), max(ccw$date)+1, by=3);
+at1 <- seq(min(ccw$date), max(ccw$date)+1, by=2);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 lines(ccw$date, ccw$Spain, lwd=3, col=2)
@@ -68,3 +68,6 @@ lines(ccw$date, ccw$`Korea, South`, lwd=3, lty=3, col=4)
 legend(ccw$date[1], 15000, legend=c("Korea", "Italy", "Spain"),
        col=c(4, 5, 2), lty=c(3,1,1), lwd=3, cex=0.8,
        box.lty=0)
+
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
+abline(h=seq(0,max(ccw$Italy),5000), lty=2, col="grey90")  # Add faint grid lines
