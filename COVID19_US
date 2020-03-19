@@ -33,7 +33,7 @@ plot(ccw$date, ccw$US, type="l", lwd=3,
      ylab='', 
      xlab='',
      log='y',
-     col=5,
+     col=4,
      axes=FALSE,
      main = "Log-lin cumulative COVID-19 cases in US",
      cex.main=0.9)
@@ -43,21 +43,27 @@ axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 
 at2 <- 2^seq(1,30,by=1)
-axis(side=2, at2, cex.axis=0.7)
+axis(side=2, at2, cex.axis=0.7, las=2)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
 abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
 
 
-plot(ccw$date, ccw$US, type="l", lwd=3,
+plot(ccw$date, ccw$US, type="l", lwd=3, bty='l',
      ylab='', 
      xlab='',
-     xaxt="n",
-     col=5,
+     axes=F,
+     col=4,
      cex.axis=0.7,
      las=2,
      main = "COVID-19 cumulative cases in the US",
      cex.main=0.9)
 
+
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=1);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+at2 <- seq(1000,max(ccw$US)+1000,1000)
+axis(side=2, at2, cex.axis=0.7, las=2)
+
+abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
