@@ -8,7 +8,7 @@ corona = (read_csv(x)
           %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
                            names_to = "date",
                            values_to = "cases")
-          %>% select(`Country/Region`, date, cases)
+          %>% select(`Province/State`,`Country/Region`, date, cases)
           %>% mutate(date=as.Date(date,format="%m/%d/%y"))
           %>% drop_na(cases)
           %>% rename(country="Country/Region")
@@ -51,10 +51,11 @@ corona_death = (read_csv(y)
           %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
                            names_to = "date",
                            values_to = "cases")
-          %>% select(`Country/Region`, date, cases)
+          %>% select(`Province/State`, `Country/Region`, date, cases)
           %>% mutate(date=as.Date(date,format="%m/%d/%y"))
           %>% drop_na(cases)
           %>% rename(country="Country/Region")
+          %>% rename(state="Province/State")
 )
 
 ccd <- (corona_death
@@ -72,7 +73,46 @@ lines(ccwd$date, ccwd$Italy, type="l", lwd=3, lty=1,
 
 lines(ccwd$date, ccwd$Spain, lwd=3, col=2)
 
-legend(ccw$date[1], 15000, legend=c("ITL cases","ITL deaths", "Spain deaths"),
+legend(ccw$date[1], 20000, legend=c("ITL cases","ITL deaths", "Spain deaths"),
        col=c(4, 4, 2), lty=c(3,1,1), lwd=3, cex=0.8,
        box.lty=0)
 
+ccdpred <- (corona_death
+        %>% filter(country %in% c("Italy"))
+)
+
+ccwdpred <- (ccdpred
+         %>% pivot_wider(names_from="country",values_from="cases")
+         %>% filter(Italy>1)
+)
+
+china <- corona_death[corona_death$country=='China',]
+provinces <- c('Hubei', 'Guangdong', 'Henan', 'Zhejiang', 'Hunan', 'Anhui',
+               'Jiangxi','Shandong','Jiangsu','Sichuan','Heilongjiang','Hebei',
+               'Fujian','Guangxi','Shaanxi','Yunnan','Hainan','Guizhou','Shanxi',
+               'Gansu','Hong Kong','Liaoning','Jilin','Xinjiang','Inner Mongolia',
+               'Ningxia','Qinghai','Macau','Tibet')
+china_prov <- china[is.element(china$state,provinces),]
+ccchina <- china_prov[,2:4]
+temp <- aggregate(ccchina[ ,3], FUN="sum", by=list(as.Date(ccchina$date)))
+ccchina[,2:3] <- temp 
+ccchina <- ccchina[1:nrow(temp),]
+
+#lines(ccchina$date, ccchina$cases, lwd=3, col=2)
+abline(h=max(ccchina$cases))
+legend(ccw$date[1], 3000, legend=c("Deaths in China"),
+       col=c(1), lty=c(1), lwd=1, cex=0.8,
+       box.lty=0)
+
+#require(tseries)
+#require(forecast)
+#require(astsa)
+#dif<-diff(ccwdpred$Italy)
+#fit = auto.arima(dif)
+#pred = predict(fit, n.ahead = 50)
+#ts.plot(dif, pred$pred, lty = c(1,3), col=c(5,2))
+#gtemp_pred<-gtemp[length(gtemp)]
+#for(i in 1:length(pred$pred)){
+#  gtemp_pred[i+1]<-gtemp_pred[i]+pred$pred[i]
+#}
+#plot(c(gtemp,gtemp_pred),type="l")
