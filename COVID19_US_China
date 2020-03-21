@@ -3,7 +3,6 @@ require(foreign)
 require(tidyverse) # To tip the df from long row of dates to cols (pivot_longer())
 
 
-
 x = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv")
 
 corona = (read_csv(x)
@@ -13,35 +12,41 @@ corona = (read_csv(x)
           %>% select(`Province/State`, `Country/Region`, date, cases)
           %>% mutate(date=as.Date(date,format="%m/%d/%y"))
           %>% drop_na(cases)
-          %>% rename(country="Country/Region")
-          %>% rename(state="Province/State")
 )
 
-cc_with_states <- corona[is.element(corona$state,state.name),]
-cc <- cc_with_states[,2:4]
-us <- aggregate(cc[ ,3], FUN="sum", by=list(as.Date(cc$date)))
-cc[,2:3] <- us 
-cc <- cc[1:nrow(us),]
+united <- corona[corona$`Country/Region`=='US',]
+cc_no_states <- united[!united$`Province/State`%in%state.name,]
+ccn <- cc_no_states[,2:4]
 
-china <- corona[corona$country=='China',]
+cc_with_states <- corona[is.element(corona$`Province/State`,state.name),]
+cc <- cc_with_states[,2:4]
+
+mix <- rbind(ccn,cc)
+mix <- aggregate(mix[,3], FUN="sum", by=list(as.Date(mix$date)))
+
+
+cc[,2:3] <- mix
+cc <- cc[1:nrow(mix),]
+
+china <- corona[corona$`Country/Region`=='China',]
 provinces <- c('Hubei', 'Guangdong', 'Henan', 'Zhejiang', 'Hunan', 'Anhui',
                'Jiangxi','Shandong','Jiangsu','Sichuan','Heilongjiang','Hebei',
                'Fujian','Guangxi','Shaanxi','Yunnan','Hainan','Guizhou','Shanxi',
                'Gansu','Hong Kong','Liaoning','Jilin','Xinjiang','Inner Mongolia',
                'Ningxia','Qinghai','Macau','Tibet')
-china_prov <- china[is.element(china$state,provinces),]
+china_prov <- china[is.element(china$`Province/State`,provinces),]
 ccchina <- china_prov[,2:4]
 temp <- aggregate(ccchina[ ,3], FUN="sum", by=list(as.Date(ccchina$date)))
 ccchina[,2:3] <- temp 
 ccchina <- ccchina[1:nrow(temp),]
 
 ccw <- (cc
-        %>% pivot_wider(names_from="country",values_from="cases")
+        %>% pivot_wider(names_from=`Country/Region`,values_from="cases")
         %>% filter(US>1)
 )
 
 ccw_china <- (ccchina
-        %>% pivot_wider(names_from="country",values_from="cases")
+        %>% pivot_wider(names_from=`Country/Region`,values_from="cases")
         %>% filter(China>1)
 )
 
@@ -90,3 +95,4 @@ lines(ccw$date, ccw$US, lwd=3, col=4)
 legend(ccw_china$date[1], 70000, legend=c("China", "US"),
        col=c(5, 4), lty=c(3,1), lwd=3, cex=0.8,
        box.lty=0)
+
