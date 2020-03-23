@@ -47,7 +47,7 @@ plot(ccw_china$date, ccw_china$China, type="l", lwd=3, lty=3,
      log='y',
      col=7,
      axes=FALSE,
-     main = "Log-lin cumulative COVID-19 cases in Italy and Spain v SK & China",
+     main = "Log-lin cumulative COVID-19 cases in Italy, Spain, US v SK & China",
         cex.main=0.9,
      cex.main=0.9)
 
@@ -103,7 +103,7 @@ plot(ccw_china$date, ccw_china$China, type="l", lwd=3, lty=3,
      xaxt="n",
      cex.axis=0.7,
      las=2,
-     main = "Cumulative COVID-19 cases in Italy and Spain v SK & China",
+     main = "Cumulative COVID-19 cases in Italy, Spain, US v SK & China",
      cex.main=0.9,
      bty='l')
 
