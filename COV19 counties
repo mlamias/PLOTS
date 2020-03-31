@@ -1,0 +1,65 @@
+library(rvest)
+
+cachedir <- "cache"
+if (!dir.exists(cachedir)) dir.create(cachedir)
+
+URL <- "https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports"
+
+html <- read_html(URL)
+csvlinks <- html_nodes(html, "td span") %>%
+  html_nodes("a") %>%
+  html_attr("href") %>%
+  grep("csv$", ., value = TRUE) %>%
+  paste0("https://raw.githubusercontent.com", .) %>%
+  gsub("/blob", "", .)
+csvfiles <- file.path(cachedir, basename(csvlinks))
+donothave <- !file.exists(csvfiles)
+csvlinks <- csvlinks[donothave]
+csvfiles <- csvfiles[donothave]
+
+
+ign <- Map(function(l,f) download.file(l, f, quiet=TRUE), csvlinks, csvfiles)
+
+csvfiles2 <- list.files(path = cachedir, pattern = "csv$", full.names = TRUE)
+
+
+list_of_frames <- lapply(csvfiles2, read.csv, stringsAsFactors = FALSE)
+
+list_of_frames2 <- lapply(list_of_frames, function(x) {
+  colnames(x) <- gsub(".*\\.", "", colnames(x))
+  x
+})
+
+renamer <- c(
+  State = "Province_State",
+  Region = "Country_Region",
+  Update = "Last_Update",
+  Latitude = "Lat",
+  Longitude = "Long_"
+)
+list_of_frames3 <- lapply(list_of_frames2, function(x) {
+  nms <- colnames(x)
+  colnames(x) <- ifelse(nms %in% names(renamer), renamer[ nms ], nms)
+  x
+})
+
+
+alldata <- data.table::rbindlist(list_of_frames3, fill = TRUE)
+
+fmts <- c("%m/%d/%y %H:%M", "%m/%d/%Y %H:%M", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S")
+timestamp <- rep(Sys.time()[NA], nrow(alldata))
+for (fmt in fmts) {
+  if (!any(isna <- is.na(timestamp))) next
+  timestamp[isna] <- as.POSIXct(alldata$Last_Update[isna], format = fmt)
+}
+
+alldata$Last_Update <- timestamp
+
+
+Atlantic <- alldata[alldata$Admin2=="Atlantic",]
+Atlantic[,Atlantic$Confirmed]
+Atlantic[,Atlantic$Last_Update]
+with(as.data.frame(Atlantic),plot(Last_Update,Confirmed,xaxt="n", xlab=""))
+axis.POSIXct(1,at=Atlantic$Last_Update,
+             labels=format(Atlantic$Last_Update,"%y-%m-%d"),las=2)
+
