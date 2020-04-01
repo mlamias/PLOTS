@@ -17,8 +17,8 @@ donothave <- !file.exists(csvfiles)
 csvlinks <- csvlinks[donothave]
 csvfiles <- csvfiles[donothave]
 
-
 ign <- Map(function(l,f) download.file(l, f, quiet=TRUE), csvlinks, csvfiles)
+
 
 csvfiles2 <- list.files(path = cachedir, pattern = "csv$", full.names = TRUE)
 
@@ -56,10 +56,21 @@ for (fmt in fmts) {
 alldata$Last_Update <- timestamp
 
 
-Atlantic <- alldata[alldata$Admin2=="Atlantic",]
-Atlantic[,Atlantic$Confirmed]
-Atlantic[,Atlantic$Last_Update]
-with(as.data.frame(Atlantic),plot(Last_Update,Confirmed,xaxt="n", xlab=""))
-axis.POSIXct(1,at=Atlantic$Last_Update,
-             labels=format(Atlantic$Last_Update,"%y-%m-%d"),las=2)
+Burlington <- alldata[alldata$Admin2=="Burlington",]
+Monmouth <- alldata[alldata$Admin2=="Monmouth",]
+Philadelphia <- alldata[alldata$Admin2=="Philadelphia",]
+with(as.data.frame(Philadelphia),
+     plot(Last_Update, Confirmed,
+          xaxt="n", xlab="", ylab="", pch=19, cex.axis=0.8, cex=0.7,
+          cex.main=0.9, las=2, bty='l',
+          main="Confirmed cases"))
+axis.POSIXct(1,at=Philadelphia$Last_Update,
+             labels=format(Philadelphia$Last_Update,"%m/%d"),
+             las=2, cex.axis=0.8)
+with(as.data.frame(Burlington),points(Last_Update, Confirmed, pch=19, col=4, cex=0.7))
+with(as.data.frame(Monmouth),points(Last_Update, Confirmed, pch=19, col=7, cex=0.7))
+legend(Burlington$Last_Update[1], 1000,
+       legend=c("Philadelphia", "Monmouth County", "Burlington county", "Burlington county deaths"),
+       col=c(1, 7, 4, 2), pch=19, cex=0.8, box.lty=0)    
+with(as.data.frame(Burlington),points(Last_Update, Deaths, pch=19, col=2, cex=0.7))
 
