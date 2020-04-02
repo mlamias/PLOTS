@@ -3,6 +3,7 @@ require(foreign)
 require(tidyverse) # To tip the df from long row of dates to cols (pivot_longer())
 
 x = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+corona <- read.csv(textConnection(x))
 
 corona = (read_csv(x)
           %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
@@ -45,6 +46,7 @@ abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
 
 
 y = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+corona_death <- read.csv(textConnection(y))
 
 corona_death = (read_csv(y)
                 %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
