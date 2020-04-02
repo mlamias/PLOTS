@@ -98,7 +98,7 @@ china_prov <- china[is.element(china$state,provinces),]
 ccchina <- china_prov[,2:4]
 temp <- aggregate(ccchina[ ,3], FUN="sum", by=list(as.Date(ccchina$date)))
 
-ccchina[,2:3] <- temp 
+ccchina[1:nrow(temp),2:3] <- temp 
 ccchina <- ccchina[1:nrow(temp),]
 
 #lines(ccchina$date, ccchina$cases, lwd=3, col=2)
