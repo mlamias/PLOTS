@@ -36,6 +36,10 @@ Philadelphia <- counties[counties$state=="Pennsylvania" & counties$county=="Phil
 Philadelphia <- droplevels(Philadelphia)
 rownames(Philadelphia) <- NULL
 
+Bucks <- counties[counties$state=="Pennsylvania" & counties$county=="Bucks",]
+Bucks <- droplevels(Bucks)
+rownames(Bucks) <- NULL
+
 with(as.data.frame(Philadelphia),
      plot(date,cases,xaxt="n", xlab="", ylab="", pch=19, cex.axis=0.8, cex=0.7,
           cex.main=0.9, las=2, bty='l',
@@ -50,11 +54,12 @@ points(Monmouth$date, Monmouth$cases, pch=19, col=3, cex=0.7)
 points(Ocean$date, Ocean$cases, pch=19, col=7, cex=0.7)
 points(Camden$date, Camden$cases, pch=19, col=5, cex=0.7)
 points(Middlesex$date, Middlesex$cases, pch=19, col="purple", cex=0.7)
+points(Bucks$date, Bucks$cases, pch=19, col="gray", cex=0.7)
 
 legend(Philadelphia$date[1], 1000,
-       legend=c("Philadelphia", "Monmouth County", "Camden county",
+       legend=c("Philadelphia", "Bucks","Monmouth County", "Camden county",
                 "Burlington county", "Ocean","Burlington county deaths","Middlesex"),
-       col=c(1, 3, 5, 4, 7, 2,"purple"), pch=19, cex=0.8, box.lty=0)    
+       col=c(1,"gray", 3, 5, 4, 7, 2,"purple"), pch=19, cex=0.8, box.lty=0)    
 with(as.data.frame(Burlington),points(Burlington$date, Burlington$deaths, pch=19, col=2, cex=0.7))
 
 
