@@ -119,7 +119,7 @@ plot(ccwd$date, ccwd$Italy, type="l", lwd=3, lty=1,
      axes=FALSE,
      cex.main=0.9)
 
-at1 <- seq(min(ccw$date), max(ccw$date)+1, by=2);
+at1 <- seq(min(ccw$date), max(ccw$date)+1, by=1);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
 
@@ -127,11 +127,10 @@ at2 <- seq(0,16000,by=1000)
 axis(side=2, at2, cex.axis=0.7, las=1)
 
 abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
-at1 <- seq(min(ccw$date), max(ccw$date)+1, by=1);
 abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
 
+lines(ccwd$date, ccwd$Italy, lwd=3, col=4)
 lines(ccwd$date, ccwd$Spain, lwd=3, col=2)
-
 lines(ccwd$date, ccwd$US, lwd=3)
 
 legend(ccw$date[1], 8000, 
