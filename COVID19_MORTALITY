@@ -76,7 +76,7 @@ lines(ccwd$date, ccwd$Spain, lwd=3, col=2)
 
 lines(ccwd$date, ccwd$US, lwd=3)
 
-legend(ccw$date[1], 20000, 
+legend(ccw$date[1], 100000, 
        legend=c("Italy cases","Italy deaths", "Spain deaths", "US deaths"),
        col=c(4, 4, 2, 1), lty=c(3,1,1,1), lwd=3, cex=0.8,
        box.lty=0)
@@ -114,7 +114,7 @@ legend(ccw$date[1], 3000, legend=c("Deaths in China"),
 plot(ccwd$date, ccwd$Italy, type="l", lwd=3, lty=1,
      ylab='', 
      xlab='',
-     main ='Log-lin COVID-19 deaths in Spain Italy and US',
+     main ='COVID-19 deaths in Spain Italy and US',
      col=4,
      axes=FALSE,
      cex.main=0.9)
@@ -134,7 +134,7 @@ lines(ccwd$date, ccwd$Italy, lwd=3, col=4)
 lines(ccwd$date, ccwd$Spain, lwd=3, col=2)
 lines(ccwd$date, ccwd$US, lwd=3)
 
-legend(ccw$date[1], 8000, 
+legend(ccw$date[1], 14000, 
        legend=c("Italy deaths", "Spain deaths", "US deaths"),
        col=c(4, 2, 1), lty=c(1,1,1), lwd=3, cex=0.8,
        box.lty=0)
