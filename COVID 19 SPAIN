@@ -1,0 +1,107 @@
+require(RCurl)
+require(foreign)
+require(tidyverse) # To tip the df from long row of dates to cols (pivot_longer())
+x = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+
+corona <- read.csv(textConnection(x))
+corona = (read_csv(x)
+          %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
+                           names_to = "date",
+                           values_to = "cases")
+          %>% select(`Province/State`, `Country/Region`, date, cases)
+          %>% mutate(date=as.Date(date,format="%m/%d/%y"))
+          %>% drop_na(cases)
+          %>% rename(provinces=`Province/State`, country=`Country/Region`)
+)
+
+cc <- (corona
+       %>% filter(country %in% c("Italy","Spain", "Korea, South","US"))
+)
+
+ccw <- (cc
+        %>% pivot_wider(names_from="country",values_from="cases")
+        %>% filter(cumsum(Italy>0 & Spain>0)>=2)
+)
+
+
+
+plot(ccw$date[which(ccw$date=="2020-03-10"):length(ccw$date)], 
+     ccw$Spain[which(ccw$date=="2020-03-10"):length(ccw$date)], 
+     type="l", lwd=3, lty=1,
+     ylab='', 
+     xlab='',
+     col=1,
+     axes=FALSE,
+     main = "COVID19 Espanya",
+     cex.main=0.9,
+     cex.main=0.9)
+
+at1 <- seq(min(ccw$date), max(ccw$date)+1, by=2);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+
+at2 <- seq(0, 1000000, by=20000);
+axis(side=2, at2, cex.axis=0.7, las=2)
+
+abline(h=at2, lty=2, col="grey90")  # Add faint grid lines
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
+
+lines(ccw$date, ccw$Spain, lwd=3, col=2)
+
+y = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+corona_death <- read.csv(textConnection(y))
+
+corona_death = (read_csv(y)
+                %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
+                                 names_to = "date",
+                                 values_to = "cases")
+                %>% select(`Province/State`, `Country/Region`, date, cases)
+                %>% mutate(date=as.Date(date,format="%m/%d/%y"))
+                %>% drop_na(cases)
+                %>% rename(country="Country/Region")
+                %>% rename(state="Province/State")
+)
+
+ccd <- (corona_death
+        %>% filter(country %in% c("Spain", "Italy","US"))
+)
+
+ccwd <- (ccd
+         %>% pivot_wider(names_from="country",values_from="cases")
+         %>% filter(Italy>1)
+)
+
+
+lines(ccwd$date, ccwd$Spain, type="l", lwd=3, lty=2,
+      col="grey", cex.main=0.9)
+
+
+z = getURL("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
+corona.recovered <- read.csv(textConnection(z))
+
+
+corona.recovered = (read_csv(z)
+          %>% pivot_longer(cols = -c(`Province/State`, `Country/Region`, Lat, Long),
+                           names_to = "date",
+                           values_to = "cases")
+          %>% select(`Province/State`, `Country/Region`, date, cases)
+          %>% mutate(date=as.Date(date,format="%m/%d/%y"))
+          %>% drop_na(cases)
+          %>% rename(provinces=`Province/State`, country=`Country/Region`)
+)
+
+ccr <- (corona.recovered
+       %>% filter(country %in% c("Italy","Spain", "Korea, South","US"))
+)
+
+ccwr <- (ccr
+        %>% pivot_wider(names_from="country",values_from="cases")
+        %>% filter(cumsum(Italy>0 & Spain>0)>=2)
+)
+
+lines(ccwr$date, ccwr$Spain, type="l", lwd=3, lty=2,
+      col=5, cex.main=0.9)
+
+legend(ccw$date[which(ccw$date=="2020-03-10")], 120000, 
+       legend=c("Casos","Recuperats", "Morts"),
+       col=c(2,5,"grey"), lty=c(1,3,3), lwd=3, cex=0.8,
+       box.lty=0)
