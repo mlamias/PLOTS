@@ -139,6 +139,21 @@ legend(ccw$date[1], 14000,
        col=c(4, 2, 1), lty=c(1,1,1), lwd=3, cex=0.8,
        box.lty=0)
 
+first.der<-diff(ccwd$Italy, lag = 1, differences = 1)
+sec.der <- diff(ccwd$Italy, lag = 1, differences = 2)
+plot(ccwd$date[2:length(ccwd$date)-2], sec.der, 
+     type="l", lwd=2, lty=1,
+     ylab='', 
+     xlab='',
+     main ='Second differences COVID-19 deaths in Italy',
+     col="tan",
+     axes=FALSE,
+     cex.main=0.9)
+abline(h=0)
+at1 <- seq(min(ccw$date)+2, max(ccw$date), by=2);
+axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
+axis(side=2, seq(min(sec.der),max(sec.der),50), 
+     las=2, cex.axis=0.7)
 
 #require(tseries)
 #require(forecast)
