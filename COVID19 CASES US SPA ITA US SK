@@ -91,7 +91,7 @@ plot(ccw$date, ccw$US, type="l", lwd=3, lty=1,
 at1 <- seq(min(ccw$date), max(ccw$date)+1, by=2);
 axis.Date(1, at=at1, format="%b %d", las=2, cex.axis=0.7)
 
-at2 <- seq(0, 1000000, by=10000);
+at2 <- seq(0, 1000000, by=20000);
 axis(side=2, at2, cex.axis=0.7, las=2)
 
 abline(v=at1, lty=2, col="grey90")  # Add faint grid lines
