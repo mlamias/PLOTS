@@ -49,17 +49,23 @@ axis.POSIXct(1,Philadelphia$date, at=Philadelphia$date,
              labels=format(Philadelphia$date,"%m-%d"),
              las=2, cex.axis=0.8)
 
-points(Burlington$date, Burlington$cases, pch=19, col=4, cex=0.7)
+points(Middlesex$date, Middlesex$cases, pch=19, col="purple", cex=0.7)
 points(Monmouth$date, Monmouth$cases, pch=19, col=3, cex=0.7)
 points(Ocean$date, Ocean$cases, pch=19, col=7, cex=0.7)
 points(Camden$date, Camden$cases, pch=19, col=5, cex=0.7)
-points(Middlesex$date, Middlesex$cases, pch=19, col="purple", cex=0.7)
-points(Bucks$date, Bucks$cases, pch=19, col="gray", cex=0.7)
+points(Burlington$date, Burlington$cases, pch=22, col=4, cex=0.8)
+points(Bucks$date, Bucks$cases, pch=19, col=6, cex=0.7)
 
-legend(Philadelphia$date[1], 1000,
-       legend=c("Philadelphia", "Bucks","Monmouth County", "Camden county",
-                "Burlington county", "Ocean","Burlington county deaths","Middlesex"),
-       col=c(1,"gray", 3, 5, 4, 7, 2,"purple"), pch=19, cex=0.8, box.lty=0)    
+
+
+legend(Philadelphia$date[1], 4000,
+       legend=c("Philadelphia", "Middlesex", "Monmouth County", "Ocean", 
+                "Camden county",
+                "Burlington county", "Bucks",
+                "Burlington county deaths"),
+       col=c(1, "purple",3, 7,5, 4, 6, 2), 
+       pch=c(19,19,19,19,19,22,19,19), cex=0.8, box.lty=0)    
+
 with(as.data.frame(Burlington),points(Burlington$date, Burlington$deaths, pch=19, col=2, cex=0.7))
 
 
