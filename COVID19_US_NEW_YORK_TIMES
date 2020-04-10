@@ -112,6 +112,33 @@ legend(NY$date[1], 60000,
 last_day <- states[states$date==states$date[nrow(states)],]
 
 with(last_day, plot(state, cases, las=2, cex.axis=.7, cex.main=.9,
-                      main="Confirmed cases by state"))
+                    main="Confirmed cases by state"))
 
 abline(v=seq(1,nrow(last_day),1), lty=2, lwd=1)
+
+
+
+
+Philadelphia$daily <- c(Philadelphia$cases[1], diff(Philadelphia$cases,1))
+with(as.data.frame(Philadelphia),
+     plot(date,daily,xaxt="n", xlab="", ylab="", pch=19, cex.axis=0.8, cex=0.7,
+          cex.main=0.9, las=2, bty='l', ylim=c(0,600),
+          main="Daily cases by county"))
+
+axis.POSIXct(1,Philadelphia$date, at=Philadelphia$date,
+             labels=format(Philadelphia$date,"%m-%d"),
+             las=2, cex.axis=0.8)
+
+
+Burlington$daily <- c(Burlington$cases[1], diff(Burlington$cases,1))
+points(Burlington$date, Burlington$daily, pch=22, col=4, cex=0.8)
+Middlesex$daily <- c(Middlesex$cases[1], diff(Middlesex$cases,1))
+points(Middlesex$date, Middlesex$daily, pch=19, col=6, cex=0.7)
+points(Philadelphia$date, Philadelphia$daily, pch=19, col=1, cex=0.7)
+at1 <- seq(min(Philadelphia$date), last(Philadelphia$date)+1, by="days")
+abline(v=at1, lty=2, col="grey90")  # Add faint grid lines   
+
+legend(Philadelphia$date[1], 600,
+       legend=c("Philadelphia", "Burlington county", "Middlesex"),
+       col=c(1, 4, 6), 
+       pch=c(19,22,19), box.lty=0)  
